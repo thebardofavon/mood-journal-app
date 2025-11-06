@@ -295,7 +295,7 @@
 								class="peer sr-only"
 							/>
 							<div
-								class="peer h-6 w-11 rounded-full bg-input peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-ring peer-focus:outline-none after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-border after:bg-background after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-primary-foreground rtl:peer-checked:after:-translate-x-full"
+								class="peer bg-input peer-checked:bg-primary peer-focus:ring-ring after:border-border after:bg-background peer-checked:after:border-primary-foreground h-6 w-11 rounded-full peer-focus:ring-2 peer-focus:outline-none after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:transition-all after:content-[''] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full"
 							></div>
 						</label>
 					</div>
@@ -309,7 +309,7 @@
 					<CardDescription>Review how journal data is handled for each provider</CardDescription>
 				</CardHeader>
 				<CardContent class="space-y-4">
-					<div class="space-y-2 rounded-lg bg-muted p-4">
+					<div class="bg-muted space-y-2 rounded-lg p-4">
 						<p class="text-sm font-medium">🔒 Your privacy matters</p>
 						<ul class="text-muted-foreground space-y-1 text-sm">
 							<li>• Entries only leave this server when you pick OpenAI, Groq, or Gemini</li>

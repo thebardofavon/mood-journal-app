@@ -9,6 +9,7 @@ import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 import { analyzeSentiment, extractKeywords, extractEntities } from '$lib/server/nlp';
 import { getAISettings, generateFollowUpQuestion } from '$lib/server/ai';
+import { updateUserAchievements } from '$lib/server/achievement-tracker';
 
 export const listEntries = query(async () => {
 	// Fetch latest 20 entries ordered by created_at
@@ -147,6 +148,9 @@ export const createEntry = form(
 			console.error('Error generating AI follow-up question:', error);
 			// Don't fail the entry creation if AI fails
 		}
+
+		// Update achievements
+		updateUserAchievements(user.id);
 
 		return { id, aiQuestion };
 	}

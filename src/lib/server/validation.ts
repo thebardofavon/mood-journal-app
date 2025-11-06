@@ -32,10 +32,7 @@ export const PasswordSchema = v.pipe(
 	v.maxLength(128, 'Password is too long')
 );
 
-export const MoodSchema = v.picklist(
-	['happy', 'neutral', 'sad', 'anxious'],
-	'Invalid mood value'
-);
+export const MoodSchema = v.picklist(['happy', 'neutral', 'sad', 'anxious'], 'Invalid mood value');
 
 export const ContentSchema = v.pipe(
 	v.string(),
@@ -44,10 +41,7 @@ export const ContentSchema = v.pipe(
 	v.maxLength(10000, 'Content is too long (max 10,000 characters)')
 );
 
-export const UUIDSchema = v.pipe(
-	v.string(),
-	v.uuid('Invalid ID format')
-);
+export const UUIDSchema = v.pipe(v.string(), v.uuid('Invalid ID format'));
 
 /**
  * Sanitize string input to prevent XSS and injection attacks
@@ -67,12 +61,12 @@ export function validateInput<T>(
 	data: unknown
 ): { success: true; data: T } | { success: false; error: string } {
 	const result = v.safeParse(schema, data);
-	
+
 	if (result.success) {
 		return { success: true, data: result.output };
 	}
-	
-	const errors = result.issues.map(issue => issue.message);
+
+	const errors = result.issues.map((issue) => issue.message);
 	return { success: false, error: errors.join('. ') };
 }
 
@@ -87,15 +81,16 @@ export function checkPasswordStrength(password: string): {
 	const hasLowerCase = /[a-z]/.test(password);
 	const hasNumber = /[0-9]/.test(password);
 	const hasSpecial = /[^A-Za-z0-9]/.test(password);
-	
+
 	const checks = [hasUpperCase, hasLowerCase, hasNumber, hasSpecial].filter(Boolean).length;
-	
+
 	if (checks < 2) {
 		return {
 			isStrong: false,
-			message: 'Password should include a mix of uppercase, lowercase, numbers, and special characters'
+			message:
+				'Password should include a mix of uppercase, lowercase, numbers, and special characters'
 		};
 	}
-	
+
 	return { isStrong: true };
 }

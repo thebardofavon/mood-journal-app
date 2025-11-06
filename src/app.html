@@ -3,33 +3,42 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		
+
 		<!-- PWA Meta Tags -->
 		<meta name="application-name" content="Mood Journal" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 		<meta name="apple-mobile-web-app-title" content="Mood Journal" />
-		<meta name="description" content="Your intelligent wellness companion for mindful journaling and emotional growth with AI-powered insights." />
+		<meta
+			name="description"
+			content="Your intelligent wellness companion for mindful journaling and emotional growth with AI-powered insights."
+		/>
 		<meta name="format-detection" content="telephone=no" />
 		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="theme-color" content="#2563eb" />
-		
+
 		<!-- PWA Manifest -->
 		<link rel="manifest" href="/manifest.json" />
-		
+
 		<!-- Favicons -->
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
-		
+		<link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.svg" />
+
 		<!-- Open Graph / Social Media -->
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content="Mood Journal - Intelligent Wellness Companion" />
-		<meta property="og:description" content="Transform your mental wellness journey with AI-powered insights, sentiment analysis, and personalized guidance." />
+		<meta
+			property="og:description"
+			content="Transform your mental wellness journey with AI-powered insights, sentiment analysis, and personalized guidance."
+		/>
 		<meta property="og:site_name" content="Mood Journal" />
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content="Mood Journal - Intelligent Wellness Companion" />
-		<meta name="twitter:description" content="Transform your mental wellness journey with AI-powered insights." />
-		
+		<meta
+			name="twitter:description"
+			content="Transform your mental wellness journey with AI-powered insights."
+		/>
+
 		<script>
 			// Respect OS preference; persist user choice via localStorage('theme')
 			try {
@@ -38,7 +47,7 @@
 				const dark = saved ? saved === 'dark' : preferDark;
 				if (dark) document.documentElement.classList.add('dark');
 			} catch {}
-			
+
 			// Register service worker for PWA
 			if ('serviceWorker' in navigator) {
 				window.addEventListener('load', () => {

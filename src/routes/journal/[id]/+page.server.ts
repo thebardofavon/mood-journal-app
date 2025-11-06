@@ -14,21 +14,32 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	const token = cookies.get('auth-session');
 	const { user } = await validateSessionToken(token || '');
 	if (!user) throw redirect(303, '/auth/login');
-	
+
 	const entryId = params.id;
-	
+
 	try {
 		const rows = await db
 			.select()
 			.from(table.entry)
 			.where(and(eq(table.entry.id, entryId), eq(table.entry.userId, user.id)))
 			.limit(1);
-		
+
 		if (rows.length === 0) {
 			throw error(404, 'Entry not found');
 		}
-		
+
 		const entry = rows[0];
+
+		// Fetch tags for this entry
+		const tagData = await db
+			.select({
+				name: table.tag.name,
+				type: table.tag.type
+			})
+			.from(table.entryTag)
+			.innerJoin(table.tag, eq(table.entryTag.tagId, table.tag.id))
+			.where(eq(table.entryTag.entryId, entryId));
+
 		const html = sanitizeHtml(String(marked.parse(entry.content)), {
 			allowedTags: sanitizeHtml.defaults.allowedTags.concat(['audio', 'source']),
 			allowedAttributes: {
@@ -38,8 +49,15 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 				img: ['src', 'alt', 'title', 'class']
 			}
 		});
-		
-		return { user, entry: { ...entry, html } };
+
+		return {
+			user,
+			entry: {
+				...entry,
+				html,
+				tags: tagData
+			}
+		};
 	} catch (err) {
 		if (err instanceof Response) throw err;
 		console.error('[journal/[id]] Database error:', err);
@@ -57,7 +75,7 @@ export const actions: Actions = {
 		try {
 			const token = cookies.get('auth-session');
 			const { user } = await validateSessionToken(token || '');
-			
+
 			if (!user) {
 				return fail(401, { error: 'Unauthorized. Please log in.' });
 			}
@@ -71,7 +89,7 @@ export const actions: Actions = {
 
 			const parsed = v.safeParse(UpdateSchema, data);
 			if (!parsed.success) {
-				const errors = parsed.issues.map(issue => issue.message).join('. ');
+				const errors = parsed.issues.map((issue) => issue.message).join('. ');
 				return fail(400, { error: `Validation failed: ${errors}` });
 			}
 
@@ -95,12 +113,12 @@ export const actions: Actions = {
 			return fail(500, { error: 'An unexpected error occurred' });
 		}
 	},
-	
+
 	delete: async ({ params, cookies }) => {
 		try {
 			const token = cookies.get('auth-session');
 			const { user } = await validateSessionToken(token || '');
-			
+
 			if (!user) {
 				return fail(401, { error: 'Unauthorized. Please log in.' });
 			}

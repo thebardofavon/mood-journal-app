@@ -15,6 +15,62 @@
       "when": 1761153547367,
       "tag": "0001_silent_william_stryker",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1761154000000,
+      "tag": "0002_add_avatar_url",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1761154500000,
+      "tag": "0003_authjs_integration",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1761155000000,
+      "tag": "0004_burly_the_hood",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1761155500000,
+      "tag": "0005_black_queen_noir",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1761156000000,
+      "tag": "0006_mighty_emma_frost",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1761156500000,
+      "tag": "0007_multi_ai_support",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1762402686550,
+      "tag": "0008_slimy_scarlet_spider",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1762405045610,
+      "tag": "0009_gray_starhawk",
+      "breakpoints": true
     }
   ]
 }

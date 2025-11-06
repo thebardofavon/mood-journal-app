@@ -1,0 +1,122 @@
+[
+	{
+		"id": 1,
+		"content": "I always fail at everything I try. Nothing ever works out for me. I'm completely useless.",
+		"expectedDistortions": ["all-or-nothing", "overgeneralization"],
+		"severity": "high"
+	},
+	{
+		"id": 2,
+		"content": "Today's presentation went okay, but I stumbled on one slide so the whole thing was a disaster. Everyone must think I'm incompetent now.",
+		"expectedDistortions": ["all-or-nothing", "magnification", "jumping-to-conclusions"],
+		"severity": "high"
+	},
+	{
+		"id": 3,
+		"content": "I should be more productive. I must work harder. I need to be perfect at my job.",
+		"expectedDistortions": ["should-statements"],
+		"severity": "medium"
+	},
+	{
+		"id": 4,
+		"content": "I feel like a failure, so I must be one. Because I feel anxious about this meeting, it means something bad will definitely happen.",
+		"expectedDistortions": ["emotional-reasoning", "jumping-to-conclusions"],
+		"severity": "high"
+	},
+	{
+		"id": 5,
+		"content": "My friend didn't text me back immediately. They must be angry at me. I've ruined our friendship.",
+		"expectedDistortions": ["jumping-to-conclusions", "magnification"],
+		"severity": "high"
+	},
+	{
+		"id": 6,
+		"content": "This project is going to be a complete catastrophe. Everything that can go wrong will go wrong. It's going to be terrible and awful.",
+		"expectedDistortions": ["magnification", "overgeneralization"],
+		"severity": "high"
+	},
+	{
+		"id": 7,
+		"content": "I got some positive feedback today, but they were just being nice. They don't really mean it. The criticism is what's true.",
+		"expectedDistortions": ["disqualifying-positive", "mental-filter"],
+		"severity": "medium"
+	},
+	{
+		"id": 8,
+		"content": "I made one mistake in the report, so I'm a terrible employee. I'm just a screw-up.",
+		"expectedDistortions": ["labeling", "all-or-nothing", "overgeneralization"],
+		"severity": "high"
+	},
+	{
+		"id": 9,
+		"content": "Every time I try something new, it never works out. This always happens to me. It's typical.",
+		"expectedDistortions": ["overgeneralization"],
+		"severity": "medium"
+	},
+	{
+		"id": 10,
+		"content": "The weather is bad today. It must be because I had plans. Everything bad that happens is somehow my fault.",
+		"expectedDistortions": ["personalization"],
+		"severity": "medium"
+	},
+	{
+		"id": 11,
+		"content": "Today was a good day. I finished my work on time and went for a nice walk in the park. I'm grateful for the sunshine.",
+		"expectedDistortions": [],
+		"severity": "none"
+	},
+	{
+		"id": 12,
+		"content": "The meeting was challenging, but I handled it reasonably well. There's room for improvement, but overall I'm satisfied with how it went.",
+		"expectedDistortions": [],
+		"severity": "none"
+	},
+	{
+		"id": 13,
+		"content": "I didn't get the promotion this time. I'm disappointed, but I can use this as motivation to improve my skills for next time.",
+		"expectedDistortions": [],
+		"severity": "none"
+	},
+	{
+		"id": 14,
+		"content": "I feel anxious about tomorrow's interview. It's normal to feel nervous. I'll prepare as best I can and do my best.",
+		"expectedDistortions": [],
+		"severity": "none"
+	},
+	{
+		"id": 15,
+		"content": "My partner forgot our anniversary. They obviously don't care about me anymore. Our relationship is doomed.",
+		"expectedDistortions": ["jumping-to-conclusions", "all-or-nothing", "magnification"],
+		"severity": "high"
+	},
+	{
+		"id": 16,
+		"content": "I should have exercised today. I must stick to my schedule perfectly. If I miss one day, I'm a failure.",
+		"expectedDistortions": ["should-statements", "all-or-nothing"],
+		"severity": "medium"
+	},
+	{
+		"id": 17,
+		"content": "Everyone at the party was having fun except me. I'm so boring. No one wants to talk to me.",
+		"expectedDistortions": ["overgeneralization", "labeling", "mental-filter"],
+		"severity": "high"
+	},
+	{
+		"id": 18,
+		"content": "I tried really hard on this assignment but got a B+. I'm not smart enough. I'll never be good at this.",
+		"expectedDistortions": ["disqualifying-positive", "all-or-nothing", "overgeneralization"],
+		"severity": "high"
+	},
+	{
+		"id": 19,
+		"content": "Today was tough. Work was stressful and I felt overwhelmed. But I got through it and I'm proud of that. Tomorrow is a new day.",
+		"expectedDistortions": [],
+		"severity": "none"
+	},
+	{
+		"id": 20,
+		"content": "I can't stand this situation. It's completely unbearable and intolerable. This is the worst thing that's ever happened.",
+		"expectedDistortions": ["magnification", "all-or-nothing"],
+		"severity": "high"
+	}
+]

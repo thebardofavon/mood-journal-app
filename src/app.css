@@ -48,7 +48,7 @@
 		--input: 240 4% 18%;
 		--ring: 240 5% 84%;
 	}
-	
+
 	body {
 		background-color: hsl(var(--background));
 		color: hsl(var(--foreground));
@@ -65,8 +65,8 @@ html {
 
 /* Force dark mode styles for form elements */
 .dark textarea,
-.dark input[type="text"],
-.dark input[type="search"],
+.dark input[type='text'],
+.dark input[type='search'],
 .dark select {
 	background-color: hsl(var(--card)) !important;
 	color: hsl(var(--foreground)) !important;

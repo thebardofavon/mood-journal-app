@@ -116,9 +116,17 @@
 
 				doc.setFontSize(10);
 				doc.setFont('helvetica', 'normal');
-				doc.text(`Average Sentiment: ${Math.round(avgSentiment)} ${getSentimentEmoji(avgSentiment)}`, margin + 5, y);
+				doc.text(
+					`Average Sentiment: ${Math.round(avgSentiment)} ${getSentimentEmoji(avgSentiment)}`,
+					margin + 5,
+					y
+				);
 				y += 6;
-				doc.text(`Most Common Mood: ${topMood[0]} ${getMoodEmoji(topMood[0])} (${topMood[1]} entries)`, margin + 5, y);
+				doc.text(
+					`Most Common Mood: ${topMood[0]} ${getMoodEmoji(topMood[0])} (${topMood[1]} entries)`,
+					margin + 5,
+					y
+				);
 				y += 15;
 			}
 
@@ -309,83 +317,90 @@
 	<title>Export Journal - Mood Journal</title>
 </svelte:head>
 
-<div class="max-w-4xl mx-auto p-6 space-y-8">
+<div class="mx-auto max-w-4xl space-y-8 p-6">
 	<!-- Header -->
 	<div class="mb-8">
-		<h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Export Your Journal</h1>
+		<h1 class="mb-2 text-3xl font-bold text-gray-900 dark:text-white">Export Your Journal</h1>
 		<p class="text-gray-600 dark:text-gray-400">
 			Download your journal entries in your preferred format
 		</p>
 	</div>
 
 	<!-- Export Configuration -->
-	<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6">
+	<div class="space-y-6 rounded-lg bg-white p-6 shadow dark:bg-gray-800">
 		<!-- Date Range -->
 		<div>
-			<h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">📅 Date Range</h3>
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">📅 Date Range</h3>
+			<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 				<div>
-					<label for="start-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+					<label
+						for="start-date"
+						class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+					>
 						Start Date
 					</label>
 					<input
 						id="start-date"
 						type="date"
 						bind:value={startDate}
-						class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+						class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 					/>
 				</div>
 				<div>
-					<label for="end-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+					<label
+						for="end-date"
+						class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+					>
 						End Date
 					</label>
 					<input
 						id="end-date"
 						type="date"
 						bind:value={endDate}
-						class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+						class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 					/>
 				</div>
 			</div>
-			<p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
-				{filteredCount} {filteredCount === 1 ? 'entry' : 'entries'} in selected range
+			<p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+				{filteredCount}
+				{filteredCount === 1 ? 'entry' : 'entries'} in selected range
 			</p>
 		</div>
 
 		<!-- Format Selection -->
 		<div>
-			<h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">📄 Export Format</h3>
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+			<h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">📄 Export Format</h3>
+			<div class="grid grid-cols-1 gap-3 md:grid-cols-3">
 				<button
 					onclick={() => (format = 'pdf')}
-					class="p-4 border-2 rounded-lg transition-all {format === 'pdf'
+					class="rounded-lg border-2 p-4 transition-all {format === 'pdf'
 						? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-						: 'border-gray-300 dark:border-gray-600 hover:border-gray-400'}"
+						: 'border-gray-300 hover:border-gray-400 dark:border-gray-600'}"
 					type="button"
 				>
-					<div class="text-3xl mb-2">📕</div>
+					<div class="mb-2 text-3xl">📕</div>
 					<div class="font-medium text-gray-900 dark:text-white">PDF</div>
 					<div class="text-xs text-gray-500 dark:text-gray-400">Formatted document</div>
 				</button>
 				<button
 					onclick={() => (format = 'json')}
-					class="p-4 border-2 rounded-lg transition-all {format === 'json'
+					class="rounded-lg border-2 p-4 transition-all {format === 'json'
 						? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-						: 'border-gray-300 dark:border-gray-600 hover:border-gray-400'}"
+						: 'border-gray-300 hover:border-gray-400 dark:border-gray-600'}"
 					type="button"
 				>
-					<div class="text-3xl mb-2">💾</div>
+					<div class="mb-2 text-3xl">💾</div>
 					<div class="font-medium text-gray-900 dark:text-white">JSON</div>
 					<div class="text-xs text-gray-500 dark:text-gray-400">Data backup</div>
 				</button>
 				<button
 					onclick={() => (format = 'markdown')}
-					class="p-4 border-2 rounded-lg transition-all {format === 'markdown'
+					class="rounded-lg border-2 p-4 transition-all {format === 'markdown'
 						? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-						: 'border-gray-300 dark:border-gray-600 hover:border-gray-400'}"
+						: 'border-gray-300 hover:border-gray-400 dark:border-gray-600'}"
 					type="button"
 				>
-					<div class="text-3xl mb-2">📝</div>
+					<div class="mb-2 text-3xl">📝</div>
 					<div class="font-medium text-gray-900 dark:text-white">Markdown</div>
 					<div class="text-xs text-gray-500 dark:text-gray-400">Plain text</div>
 				</button>
@@ -395,29 +410,29 @@
 		<!-- Export Options -->
 		{#if format === 'pdf'}
 			<div>
-				<h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">⚙️ PDF Options</h3>
+				<h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">⚙️ PDF Options</h3>
 				<div class="space-y-3">
-					<label class="flex items-center gap-3 cursor-pointer">
+					<label class="flex cursor-pointer items-center gap-3">
 						<input
 							type="checkbox"
 							bind:checked={includeMood}
-							class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+							class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
 						/>
 						<span class="text-gray-700 dark:text-gray-300">Include mood indicators</span>
 					</label>
-					<label class="flex items-center gap-3 cursor-pointer">
+					<label class="flex cursor-pointer items-center gap-3">
 						<input
 							type="checkbox"
 							bind:checked={includeSentiment}
-							class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+							class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
 						/>
 						<span class="text-gray-700 dark:text-gray-300">Include sentiment scores</span>
 					</label>
-					<label class="flex items-center gap-3 cursor-pointer">
+					<label class="flex cursor-pointer items-center gap-3">
 						<input
 							type="checkbox"
 							bind:checked={includeStats}
-							class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+							class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
 						/>
 						<span class="text-gray-700 dark:text-gray-300">Include summary statistics</span>
 					</label>
@@ -431,10 +446,12 @@
 		<button
 			onclick={handleExport}
 			disabled={exporting || filteredCount === 0}
-			class="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+			class="flex flex-1 items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
 		>
 			{#if exporting}
-				<div class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+				<div
+					class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"
+				></div>
 				<span>Exporting...</span>
 			{:else}
 				<span>⬇️</span>
@@ -443,19 +460,25 @@
 		</button>
 		<a
 			href="/journal"
-			class="px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-medium transition-colors"
+			class="rounded-lg bg-gray-200 px-6 py-3 font-medium text-gray-900 transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
 		>
 			Back to Journal
 		</a>
 	</div>
 
 	<!-- Info Box -->
-	<div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-		<h4 class="font-semibold text-blue-900 dark:text-blue-300 mb-2">💡 Export Tips</h4>
-		<ul class="text-sm text-blue-800 dark:text-blue-300 space-y-1">
+	<div
+		class="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20"
+	>
+		<h4 class="mb-2 font-semibold text-blue-900 dark:text-blue-300">💡 Export Tips</h4>
+		<ul class="space-y-1 text-sm text-blue-800 dark:text-blue-300">
 			<li>• <strong>PDF:</strong> Best for printing or sharing a beautiful formatted copy</li>
-			<li>• <strong>JSON:</strong> Complete data backup with all metadata for importing elsewhere</li>
-			<li>• <strong>Markdown:</strong> Plain text format that's easy to edit and version control</li>
+			<li>
+				• <strong>JSON:</strong> Complete data backup with all metadata for importing elsewhere
+			</li>
+			<li>
+				• <strong>Markdown:</strong> Plain text format that's easy to edit and version control
+			</li>
 		</ul>
 	</div>
 </div>

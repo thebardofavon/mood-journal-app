@@ -150,7 +150,10 @@
 						label: 'Average Sentiment',
 						data: sentiments,
 						borderColor: 'hsl(var(--foreground))',
-						backgroundColor: chartType === 'line' ? 'hsl(var(--foreground) / 0.1)' : 'hsl(var(--foreground) / 0.7)',
+						backgroundColor:
+							chartType === 'line'
+								? 'hsl(var(--foreground) / 0.1)'
+								: 'hsl(var(--foreground) / 0.7)',
 						fill: chartType === 'line',
 						tension: 0.4,
 						pointRadius: 4,

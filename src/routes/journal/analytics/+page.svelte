@@ -30,39 +30,39 @@
 	<title>Analytics & Insights - Mood Journal</title>
 </svelte:head>
 
-<div class="max-w-6xl mx-auto p-6 space-y-8">
+<div class="mx-auto max-w-6xl space-y-8 p-6">
 	<!-- Header -->
 	<div class="mb-8">
-		<h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Analytics & Insights</h1>
+		<h1 class="mb-2 text-3xl font-bold text-gray-900 dark:text-white">Analytics & Insights</h1>
 		<p class="text-gray-600 dark:text-gray-400">
 			Understand your emotional patterns and track your wellness journey
 		</p>
 	</div>
 
 	<!-- Statistics Cards -->
-	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+	<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
 		<!-- Total Entries -->
-		<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-			<div class="flex items-center justify-between mb-2">
+		<div class="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
+			<div class="mb-2 flex items-center justify-between">
 				<h3 class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Entries</h3>
 				<span class="text-2xl">📝</span>
 			</div>
 			<p class="text-3xl font-bold text-gray-900 dark:text-white">{stats.totalEntries}</p>
-			<p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+			<p class="mt-1 text-xs text-gray-500 dark:text-gray-500">
 				{stats.entriesLast30Days} in last 30 days
 			</p>
 		</div>
 
 		<!-- Average Sentiment -->
-		<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-			<div class="flex items-center justify-between mb-2">
+		<div class="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
+			<div class="mb-2 flex items-center justify-between">
 				<h3 class="text-sm font-medium text-gray-600 dark:text-gray-400">Avg Sentiment</h3>
 				<span class="text-2xl">{getSentimentEmoji(stats.avgSentiment)}</span>
 			</div>
 			<p class="text-3xl font-bold {getSentimentColor(stats.avgSentiment)}">
 				{stats.avgSentiment > 0 ? '+' : ''}{stats.avgSentiment}
 			</p>
-			<p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+			<p class="mt-1 text-xs text-gray-500 dark:text-gray-500">
 				{stats.avgSentiment > 50
 					? 'Very positive'
 					: stats.avgSentiment > 0
@@ -76,77 +76,77 @@
 		</div>
 
 		<!-- Current Streak -->
-		<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-			<div class="flex items-center justify-between mb-2">
+		<div class="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
+			<div class="mb-2 flex items-center justify-between">
 				<h3 class="text-sm font-medium text-gray-600 dark:text-gray-400">Current Streak</h3>
 				<span class="text-2xl">🔥</span>
 			</div>
 			<p class="text-3xl font-bold text-orange-600">{stats.activeStreak}</p>
-			<p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+			<p class="mt-1 text-xs text-gray-500 dark:text-gray-500">
 				{stats.activeStreak === 1 ? 'day' : 'days'} in a row
 			</p>
 		</div>
 
 		<!-- Longest Streak -->
-		<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-			<div class="flex items-center justify-between mb-2">
+		<div class="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
+			<div class="mb-2 flex items-center justify-between">
 				<h3 class="text-sm font-medium text-gray-600 dark:text-gray-400">Best Streak</h3>
 				<span class="text-2xl">🏆</span>
 			</div>
 			<p class="text-3xl font-bold text-purple-600">{stats.longestStreak}</p>
-			<p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Personal record</p>
+			<p class="mt-1 text-xs text-gray-500 dark:text-gray-500">Personal record</p>
 		</div>
 	</div>
 
 	<!-- Mood Trends Chart -->
-	<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-		<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+	<div class="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
+		<div class="mb-4 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
 			<h2 class="text-xl font-bold text-gray-900 dark:text-white">Mood Trends Over Time</h2>
 
-			<div class="flex gap-2 flex-wrap">
+			<div class="flex flex-wrap gap-2">
 				<!-- Time Range Selector -->
-				<div class="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+				<div class="flex gap-1 rounded-lg bg-gray-100 p-1 dark:bg-gray-700">
 					<button
 						onclick={() => (timeRange = 'daily')}
-						class="px-3 py-1 rounded text-sm font-medium transition-colors {timeRange === 'daily'
-							? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
-							: 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}"
+						class="rounded px-3 py-1 text-sm font-medium transition-colors {timeRange === 'daily'
+							? 'bg-white text-blue-600 shadow dark:bg-gray-600 dark:text-blue-400'
+							: 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'}"
 					>
 						Daily
 					</button>
 					<button
 						onclick={() => (timeRange = 'weekly')}
-						class="px-3 py-1 rounded text-sm font-medium transition-colors {timeRange === 'weekly'
-							? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
-							: 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}"
+						class="rounded px-3 py-1 text-sm font-medium transition-colors {timeRange === 'weekly'
+							? 'bg-white text-blue-600 shadow dark:bg-gray-600 dark:text-blue-400'
+							: 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'}"
 					>
 						Weekly
 					</button>
 					<button
 						onclick={() => (timeRange = 'monthly')}
-						class="px-3 py-1 rounded text-sm font-medium transition-colors {timeRange === 'monthly'
-							? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
-							: 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}"
+						class="rounded px-3 py-1 text-sm font-medium transition-colors {timeRange === 'monthly'
+							? 'bg-white text-blue-600 shadow dark:bg-gray-600 dark:text-blue-400'
+							: 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'}"
 					>
 						Monthly
 					</button>
 				</div>
 
 				<!-- Chart Type Selector -->
-				<div class="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+				<div class="flex gap-1 rounded-lg bg-gray-100 p-1 dark:bg-gray-700">
 					<button
 						onclick={() => (chartType = 'line')}
-						class="px-3 py-1 rounded text-sm font-medium transition-colors {chartType === 'line'
-							? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
-							: 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}"
+						class="rounded px-3 py-1 text-sm font-medium transition-colors {chartType === 'line'
+							? 'bg-white text-blue-600 shadow dark:bg-gray-600 dark:text-blue-400'
+							: 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'}"
 					>
 						Line
 					</button>
 					<button
 						onclick={() => (chartType = 'bar')}
-						class="px-3 py-1 rounded text-sm font-medium transition-colors {chartType === 'bar'
-							? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
-							: 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}"
+						class="rounded px-3 py-1 text-sm font-medium transition-colors {chartType === 'bar'
+							? 'bg-white text-blue-600 shadow dark:bg-gray-600 dark:text-blue-400'
+							: 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'}"
 					>
 						Bar
 					</button>
@@ -158,23 +158,23 @@
 	</div>
 
 	<!-- Mood & Sentiment Distribution -->
-	<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+	<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 		<!-- Mood Distribution -->
-		<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-			<h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Mood Distribution</h2>
+		<div class="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
+			<h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Mood Distribution</h2>
 			<div class="space-y-3">
 				{#each Object.entries(stats.moodCounts).sort((a, b) => b[1] - a[1]) as [mood, count]}
 					{@const percentage = ((count / stats.totalEntries) * 100).toFixed(1)}
 					<div>
-						<div class="flex justify-between items-center mb-1">
-							<span class="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
+						<div class="mb-1 flex items-center justify-between">
+							<span class="text-sm font-medium text-gray-700 capitalize dark:text-gray-300">
 								{mood}
 							</span>
 							<span class="text-sm text-gray-500 dark:text-gray-400">
 								{count} ({percentage}%)
 							</span>
 						</div>
-						<div class="w-full bg-secondary rounded-full h-2">
+						<div class="bg-secondary h-2 w-full rounded-full">
 							<div
 								class="bg-primary h-2 rounded-full transition-all"
 								style="width: {percentage}%"
@@ -186,8 +186,8 @@
 		</div>
 
 		<!-- Sentiment Distribution -->
-		<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-			<h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Sentiment Analysis</h2>
+		<div class="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
+			<h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Sentiment Analysis</h2>
 			<div class="space-y-3">
 				{#each Object.entries(stats.sentimentCounts).sort((a, b) => b[1] - a[1]) as [sentiment, count]}
 					{@const percentage = ((count / stats.totalEntries) * 100).toFixed(1)}
@@ -198,8 +198,8 @@
 								? 'bg-muted-foreground'
 								: 'bg-muted-foreground/50'}
 					<div>
-						<div class="flex justify-between items-center mb-1">
-							<span class="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
+						<div class="mb-1 flex items-center justify-between">
+							<span class="text-sm font-medium text-gray-700 capitalize dark:text-gray-300">
 								{sentiment.toLowerCase()}
 								{sentiment === 'POSITIVE' ? '😊' : sentiment === 'NEGATIVE' ? '😢' : '😐'}
 							</span>
@@ -207,8 +207,11 @@
 								{count} ({percentage}%)
 							</span>
 						</div>
-						<div class="w-full bg-secondary rounded-full h-2">
-							<div class="{color} h-2 rounded-full transition-all" style="width: {percentage}%"></div>
+						<div class="bg-secondary h-2 w-full rounded-full">
+							<div
+								class="{color} h-2 rounded-full transition-all"
+								style="width: {percentage}%"
+							></div>
 						</div>
 					</div>
 				{/each}
@@ -217,8 +220,8 @@
 	</div>
 
 	<!-- Insights Section -->
-	<div class="bg-muted/50 rounded-lg shadow p-6">
-		<h2 class="text-xl font-bold mb-4">💡 Personalized Insights</h2>
+	<div class="bg-muted/50 rounded-lg p-6 shadow">
+		<h2 class="mb-4 text-xl font-bold">💡 Personalized Insights</h2>
 		<div class="space-y-3">
 			{#if stats.activeStreak >= 7}
 				<div class="flex items-start gap-3">
@@ -226,8 +229,7 @@
 					<div>
 						<p class="font-medium text-gray-900 dark:text-white">Amazing streak!</p>
 						<p class="text-sm text-gray-600 dark:text-gray-400">
-							You've been journaling consistently for {stats.activeStreak} days. Keep up the great
-							work!
+							You've been journaling consistently for {stats.activeStreak} days. Keep up the great work!
 						</p>
 					</div>
 				</div>
@@ -249,8 +251,8 @@
 					<div>
 						<p class="font-medium text-gray-900 dark:text-white">We notice tough times</p>
 						<p class="text-sm text-gray-600 dark:text-gray-400">
-							Your entries suggest you might be going through a challenging period. Remember,
-							it's okay to seek support.
+							Your entries suggest you might be going through a challenging period. Remember, it's
+							okay to seek support.
 						</p>
 					</div>
 				</div>
@@ -286,18 +288,22 @@
 
 	<!-- Predictive Insights -->
 	{#if data.insights}
-		<div class="bg-muted/50 rounded-lg shadow p-6">
-			<h2 class="text-xl font-bold mb-4">🔮 Predictive Insights</h2>
-			
+		<div class="bg-muted/50 rounded-lg p-6 shadow">
+			<h2 class="mb-4 text-xl font-bold">🔮 Predictive Insights</h2>
+
 			{#if data.insights.forecast}
-				<div class="mb-6 p-4 bg-background/50 rounded-lg">
+				<div class="bg-background/50 mb-6 rounded-lg p-4">
 					<div class="flex items-start gap-3">
 						<span class="text-3xl">
-							{data.insights.trendDirection === 'improving' ? '📈' : data.insights.trendDirection === 'declining' ? '📉' : '📊'}
+							{data.insights.trendDirection === 'improving'
+								? '📈'
+								: data.insights.trendDirection === 'declining'
+									? '📉'
+									: '📊'}
 						</span>
 						<div>
-							<p class="font-medium mb-1">Mood Trend</p>
-							<p class="text-sm text-muted-foreground">{data.insights.forecast}</p>
+							<p class="mb-1 font-medium">Mood Trend</p>
+							<p class="text-muted-foreground text-sm">{data.insights.forecast}</p>
 						</div>
 					</div>
 				</div>
@@ -306,17 +312,22 @@
 			<!-- Day of Week Patterns -->
 			{#if Object.keys(data.insights.dayOfWeekPattern).length > 0}
 				<div class="mb-6">
-					<h3 class="font-semibold mb-3">📅 Day of Week Patterns</h3>
-					<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
+					<h3 class="mb-3 font-semibold">📅 Day of Week Patterns</h3>
+					<div class="grid grid-cols-2 gap-2 md:grid-cols-4 lg:grid-cols-7">
 						{#each ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as day}
 							{@const dayData = data.insights.dayOfWeekPattern[day]}
 							{#if dayData}
 								{@const sentiment = Math.round(dayData.avgSentiment)}
-								{@const color = sentiment > 30 ? 'bg-accent border-border' : sentiment < -30 ? 'bg-muted border-border' : 'bg-secondary border-border'}
-								<div class="p-3 rounded-lg {color} border text-center">
-									<div class="text-xs font-medium mb-1">{day.slice(0, 3)}</div>
+								{@const color =
+									sentiment > 30
+										? 'bg-accent border-border'
+										: sentiment < -30
+											? 'bg-muted border-border'
+											: 'bg-secondary border-border'}
+								<div class="rounded-lg p-3 {color} border text-center">
+									<div class="mb-1 text-xs font-medium">{day.slice(0, 3)}</div>
 									<div class="text-lg font-bold">{sentiment > 0 ? '+' : ''}{sentiment}</div>
-									<div class="text-xs text-muted-foreground">{dayData.count} entries</div>
+									<div class="text-muted-foreground text-xs">{dayData.count} entries</div>
 								</div>
 							{/if}
 						{/each}
@@ -327,23 +338,35 @@
 			<!-- Time of Day Patterns -->
 			{#if Object.keys(data.insights.timeOfDayPattern).length > 0}
 				<div class="mb-6">
-					<h3 class="font-semibold mb-3">🕐 Time of Day Patterns</h3>
-					<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+					<h3 class="mb-3 font-semibold">🕐 Time of Day Patterns</h3>
+					<div class="grid grid-cols-2 gap-3 md:grid-cols-4">
 						{#each ['Morning', 'Afternoon', 'Evening', 'Night'] as time}
 							{@const timeData = data.insights.timeOfDayPattern[time]}
 							{#if timeData}
 								{@const sentiment = Math.round(timeData.avgSentiment)}
-								{@const emoji = time === 'Morning' ? '🌅' : time === 'Afternoon' ? '☀️' : time === 'Evening' ? '🌆' : '🌙'}
-								{@const color = sentiment > 20 ? 'bg-accent border-border' : sentiment < -20 ? 'bg-muted border-border' : 'bg-secondary border-border'}
-								<div class="p-4 rounded-lg border-2 {color}">
-									<div class="flex items-center gap-2 mb-2">
+								{@const emoji =
+									time === 'Morning'
+										? '🌅'
+										: time === 'Afternoon'
+											? '☀️'
+											: time === 'Evening'
+												? '🌆'
+												: '🌙'}
+								{@const color =
+									sentiment > 20
+										? 'bg-accent border-border'
+										: sentiment < -20
+											? 'bg-muted border-border'
+											: 'bg-secondary border-border'}
+								<div class="rounded-lg border-2 p-4 {color}">
+									<div class="mb-2 flex items-center gap-2">
 										<span class="text-2xl">{emoji}</span>
 										<span class="font-medium">{time}</span>
 									</div>
 									<div class="text-2xl font-bold">
 										{sentiment > 0 ? '+' : ''}{sentiment}
 									</div>
-									<div class="text-xs text-muted-foreground mt-1">{timeData.count} entries</div>
+									<div class="text-muted-foreground mt-1 text-xs">{timeData.count} entries</div>
 								</div>
 							{/if}
 						{/each}
@@ -354,12 +377,12 @@
 			<!-- Recommendations -->
 			{#if data.insights.recommendations.length > 0}
 				<div>
-					<h3 class="font-semibold mb-3">💭 Recommendations</h3>
+					<h3 class="mb-3 font-semibold">💭 Recommendations</h3>
 					<div class="space-y-2">
 						{#each data.insights.recommendations as recommendation}
-							<div class="flex items-start gap-2 p-3 bg-background/50 rounded-lg">
+							<div class="bg-background/50 flex items-start gap-2 rounded-lg p-3">
 								<span class="text-lg">💡</span>
-								<p class="text-sm text-muted-foreground">{recommendation}</p>
+								<p class="text-muted-foreground text-sm">{recommendation}</p>
 							</div>
 						{/each}
 					</div>
@@ -369,16 +392,16 @@
 	{/if}
 
 	<!-- Quick Actions -->
-	<div class="flex gap-4 justify-center">
+	<div class="flex justify-center gap-4">
 		<a
 			href="/journal"
-			class="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
+			class="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-6 py-3 font-medium transition-colors"
 		>
 			Write New Entry
 		</a>
 		<a
 			href="/journal/export"
-			class="px-6 py-3 bg-secondary text-secondary-foreground rounded-lg font-medium hover:bg-secondary/80 transition-colors"
+			class="bg-secondary text-secondary-foreground hover:bg-secondary/80 rounded-lg px-6 py-3 font-medium transition-colors"
 		>
 			Export Journal
 		</a>

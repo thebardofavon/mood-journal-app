@@ -18,15 +18,17 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	default: async ({ request, cookies, getClientAddress }) => {
 		const startTime = Date.now();
-		
+
 		try {
 			const form = await request.formData();
-			const email = String(form.get('email') || '').toLowerCase().trim();
+			const email = String(form.get('email') || '')
+				.toLowerCase()
+				.trim();
 			const password = String(form.get('password') || '');
 
 			// Get client IP for rate limiting
 			const ip = getClientAddress();
-			
+
 			// Check rate limit
 			const allowed = await allow(ip, 10, 60_000); // Stricter: 10 attempts per minute
 			if (!allowed) {
@@ -38,13 +40,17 @@ export const actions: Actions = {
 			// Input validation
 			if (!email || !password) {
 				// Constant-time delay to prevent timing attacks
-				await new Promise(resolve => setTimeout(resolve, Math.max(0, 100 - (Date.now() - startTime))));
+				await new Promise((resolve) =>
+					setTimeout(resolve, Math.max(0, 100 - (Date.now() - startTime)))
+				);
 				return fail(400, { message: 'Please provide both email and password' });
 			}
 
 			// Email format validation
 			if (!email.includes('@') || email.length < 3) {
-				await new Promise(resolve => setTimeout(resolve, Math.max(0, 100 - (Date.now() - startTime))));
+				await new Promise((resolve) =>
+					setTimeout(resolve, Math.max(0, 100 - (Date.now() - startTime)))
+				);
 				return fail(400, { message: 'Invalid email format' });
 			}
 
@@ -63,13 +69,17 @@ export const actions: Actions = {
 			} catch (dbError) {
 				console.error('[auth] Database error during user lookup:', dbError);
 				// Constant-time delay
-				await new Promise(resolve => setTimeout(resolve, Math.max(0, 100 - (Date.now() - startTime))));
+				await new Promise((resolve) =>
+					setTimeout(resolve, Math.max(0, 100 - (Date.now() - startTime)))
+				);
 				return fail(503, { message: 'Service temporarily unavailable. Please try again.' });
 			}
 
 			if (!row) {
 				// User doesn't exist - use constant-time delay to prevent user enumeration
-				await new Promise(resolve => setTimeout(resolve, Math.max(0, 100 - (Date.now() - startTime))));
+				await new Promise((resolve) =>
+					setTimeout(resolve, Math.max(0, 100 - (Date.now() - startTime)))
+				);
 				return fail(400, { message: 'Invalid email or password' });
 			}
 
@@ -100,21 +110,21 @@ export const actions: Actions = {
 				console.error('[auth] Password verification error:', verifyError);
 				return fail(500, { message: 'Authentication error. Please try again.' });
 			}
-			
+
 			if (!passwordValid) {
 				// Increment failed attempts
 				const attempts = (row.failed_attempts || 0) + 1;
 				const updates: { failedAttempts: number; lockedUntil?: Date } = {
 					failedAttempts: attempts
 				};
-				
+
 				const LOCK_THRESHOLD = 5;
 				const LOCK_MINUTES = 15;
-				
+
 				if (attempts >= LOCK_THRESHOLD) {
 					updates.lockedUntil = new Date(Date.now() + LOCK_MINUTES * 60 * 1000);
 				}
-				
+
 				try {
 					await db.update(table.user).set(updates).where(eq(table.user.id, row.id));
 				} catch (updateError) {
@@ -122,12 +132,14 @@ export const actions: Actions = {
 				}
 
 				// Constant-time delay
-				await new Promise(resolve => setTimeout(resolve, Math.max(0, 100 - (Date.now() - startTime))));
-				
+				await new Promise((resolve) =>
+					setTimeout(resolve, Math.max(0, 100 - (Date.now() - startTime)))
+				);
+
 				const remainingAttempts = LOCK_THRESHOLD - attempts;
 				if (remainingAttempts > 0) {
-					return fail(400, { 
-						message: `Invalid email or password. ${remainingAttempts} attempt${remainingAttempts > 1 ? 's' : ''} remaining.` 
+					return fail(400, {
+						message: `Invalid email or password. ${remainingAttempts} attempt${remainingAttempts > 1 ? 's' : ''} remaining.`
 					});
 				} else {
 					return fail(403, {
@@ -156,10 +168,10 @@ export const actions: Actions = {
 						const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 						try {
 							tx.insert(table.session)
-								.values({ 
-									sessionToken: sessionId, 
-									userId: row.id, 
-									expires: new Date(expiresAtMs) 
+								.values({
+									sessionToken: sessionId,
+									userId: row.id,
+									expires: new Date(expiresAtMs)
 								})
 								.run();
 							finalToken = token;
@@ -175,8 +187,8 @@ export const actions: Actions = {
 
 				if (finalToken) {
 					// Set secure cookie
-					cookies.set(sessionCookieName, finalToken, { 
-						expires: new Date(expiresAtMs), 
+					cookies.set(sessionCookieName, finalToken, {
+						expires: new Date(expiresAtMs),
 						path: '/',
 						httpOnly: true,
 						secure: process.env.NODE_ENV === 'production',
@@ -191,8 +203,8 @@ export const actions: Actions = {
 				try {
 					const fbToken = generateSessionToken();
 					const session = await createSession(fbToken, row.id);
-					cookies.set(sessionCookieName, fbToken, { 
-						expires: session.expires, 
+					cookies.set(sessionCookieName, fbToken, {
+						expires: session.expires,
 						path: '/',
 						httpOnly: true,
 						secure: process.env.NODE_ENV === 'production',
@@ -200,7 +212,9 @@ export const actions: Actions = {
 					});
 				} catch (fallbackError) {
 					console.error('[auth] Fallback session creation failed:', fallbackError);
-					return fail(500, { message: 'Login successful but session creation failed. Please try again.' });
+					return fail(500, {
+						message: 'Login successful but session creation failed. Please try again.'
+					});
 				}
 			}
 
@@ -213,7 +227,7 @@ export const actions: Actions = {
 			if (error instanceof Response && error.status === 303) {
 				throw error;
 			}
-			
+
 			console.error('[auth] Unexpected error in login:', error);
 			return fail(500, { message: 'An unexpected error occurred. Please try again.' });
 		}

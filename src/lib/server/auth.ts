@@ -31,7 +31,12 @@ export async function validateSessionToken(token: string) {
 	const [result] = await db
 		.select({
 			// Keep selection compatible with older DBs without avatar_url
-			user: { id: table.user.id, username: table.user.username, email: table.user.email, avatarUrl: table.user.avatarUrl },
+			user: {
+				id: table.user.id,
+				username: table.user.username,
+				email: table.user.email,
+				avatarUrl: table.user.avatarUrl
+			},
 			session: table.session
 		})
 		.from(table.session)

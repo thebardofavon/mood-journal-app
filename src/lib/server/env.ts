@@ -44,7 +44,9 @@ try {
 	console.error('Environment validation failed:');
 	if (error instanceof v.ValiError) {
 		for (const issue of error.issues) {
-			console.error(`  - ${issue.path?.map((p: { key: string }) => p.key).join('.')}: ${issue.message}`);
+			console.error(
+				`  - ${issue.path?.map((p: { key: string }) => p.key).join('.')}: ${issue.message}`
+			);
 		}
 	}
 	throw new Error('Invalid environment configuration. Please check your .env file.');
@@ -64,17 +66,19 @@ export function requireEnv(key: keyof typeof env): string {
 export function validateProductionEnv(): void {
 	if (env.NODE_ENV === 'production') {
 		const required = ['DATABASE_URL'];
-		const missing = required.filter(key => !env[key as keyof typeof env]);
-		
+		const missing = required.filter((key) => !env[key as keyof typeof env]);
+
 		if (missing.length > 0) {
 			throw new Error(
 				`Missing required environment variables for production: ${missing.join(', ')}`
 			);
 		}
-		
+
 		// Warn about missing optional but recommended vars
 		if (!env.REDIS_URL) {
-			console.warn('[env] REDIS_URL not set - using in-memory rate limiting (not recommended for production)');
+			console.warn(
+				'[env] REDIS_URL not set - using in-memory rate limiting (not recommended for production)'
+			);
 		}
 	}
 }

@@ -44,11 +44,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		// Validate with valibot
 		const parseResult = v.safeParse(UpdateSchema, data);
 		if (!parseResult.success) {
-			const errors = parseResult.issues.map(issue => issue.message).join(', ');
-			return json(
-				{ ok: false, error: `Validation failed: ${errors}` },
-				{ status: 400 }
-			);
+			const errors = parseResult.issues.map((issue) => issue.message).join(', ');
+			return json({ ok: false, error: `Validation failed: ${errors}` }, { status: 400 });
 		}
 
 		const { id, content, mood } = parseResult.output;
@@ -63,25 +60,16 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 				.returning({ id: table.entry.id });
 
 			if (result.length === 0) {
-				return json(
-					{ ok: false, error: 'Entry not found or access denied' },
-					{ status: 404 }
-				);
+				return json({ ok: false, error: 'Entry not found or access denied' }, { status: 404 });
 			}
 
 			return json({ ok: true, entry: { id, content, mood, updatedAt: now.toISOString() } });
 		} catch (dbError) {
 			console.error('[entry/update] Database error:', dbError);
-			return json(
-				{ ok: false, error: 'Failed to update entry' },
-				{ status: 500 }
-			);
+			return json({ ok: false, error: 'Failed to update entry' }, { status: 500 });
 		}
 	} catch (error) {
 		console.error('[entry/update] Unexpected error:', error);
-		return json(
-			{ ok: false, error: 'An unexpected error occurred' },
-			{ status: 500 }
-		);
+		return json({ ok: false, error: 'An unexpected error occurred' }, { status: 500 });
 	}
 };

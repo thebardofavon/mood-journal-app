@@ -9,6 +9,7 @@ This roadmap takes the Mood Journal to the next level, building upon the solid f
 ## ✅ Already Implemented Foundation
 
 The application already has a robust foundation:
+
 - ✅ **Auth.js Integration**: Secure authentication with OAuth support
 - ✅ **shadcn/Svelte UI**: Modern, accessible component library
 - ✅ **NLP Analysis**: Sentiment analysis, keyword extraction, entity recognition
@@ -27,6 +28,7 @@ The application already has a robust foundation:
 **Goal:** Transform the journal into a mobile-first Progressive Web App that works offline and feels like a native application.
 
 ### 1.1 PWA Implementation
+
 - **Service Worker Architecture**
   - Implement comprehensive service worker with offline-first strategy
   - Cache static assets (HTML, CSS, JS, images)
@@ -48,6 +50,7 @@ The application already has a robust foundation:
   - Local-first architecture with sync reconciliation
 
 ### 1.2 Mobile UX Optimization
+
 - **Touch-First Interactions**
   - Swipe gestures for navigation (swipe right to go back)
   - Pull-to-refresh on journal list
@@ -63,6 +66,7 @@ The application already has a robust foundation:
   - Image/attachment previews optimized for mobile bandwidth
 
 ### 1.3 Install Experience
+
 - **Smart Install Prompts**
   - Detect returning users and prompt to install
   - Beautiful custom install UI (not browser default)
@@ -76,6 +80,7 @@ The application already has a robust foundation:
 **Goal:** Keep users engaged through achievements, streaks, challenges, and rewards that make journaling fun and habit-forming.
 
 ### 2.1 Achievement System
+
 - **Achievement Types**
   - **Milestone Achievements**: First entry, 10 entries, 50 entries, 100 entries, 1 year anniversary
   - **Consistency Achievements**: 7-day streak, 30-day streak, 100-day streak, 365-day streak
@@ -92,6 +97,7 @@ The application already has a robust foundation:
   - Display achievement showcase on profile
 
 ### 2.2 Advanced Streak System
+
 - **Visual Streak Calendar**
   - GitHub-style contribution heatmap for entries
   - Color intensity based on entry length or sentiment
@@ -105,6 +111,7 @@ The application already has a robust foundation:
   - Streak analytics: best time to journal, average words per entry
 
 ### 2.3 Wellness Challenges
+
 - **Monthly Challenges**
   - "Gratitude November": Write 3 things you're grateful for daily
   - "Reflection December": End-of-year reflection prompts
@@ -119,6 +126,7 @@ The application already has a robust foundation:
   - Community challenges (optional, privacy-aware)
 
 ### 2.4 Level & XP System
+
 - **Experience Points**
   - Earn XP for entries (scaled by length and quality)
   - Bonus XP for streak days
@@ -138,6 +146,7 @@ The application already has a robust foundation:
 **Goal:** Proactively help users improve their mental and emotional well-being with personalized, context-aware recommendations.
 
 ### 3.1 Pattern Recognition Engine
+
 - **Behavioral Analysis**
   - Detect negative mood patterns (e.g., "anxious every Monday morning")
   - Identify positive triggers (e.g., "happy after exercise")
@@ -151,6 +160,7 @@ The application already has a robust foundation:
   - Privacy-first: all analysis happens client-side where possible
 
 ### 3.2 Personalized Recommendations
+
 - **Contextual Suggestions**
   - **For Anxiety**: Breathing exercises, grounding techniques, calming music
   - **For Sadness**: Gratitude prompts, reaching out to friends, uplifting content
@@ -165,6 +175,7 @@ The application already has a robust foundation:
   - Weather-aware suggestions (e.g., "It's sunny—time for a walk?")
 
 ### 3.3 Wellness Resources Library
+
 - **Integrated Content**
   - Breathing exercise guides (with animated visuals)
   - Guided meditation scripts (with timer)
@@ -179,6 +190,7 @@ The application already has a robust foundation:
   - Track which resources are most helpful
 
 ### 3.4 Mood Forecasting
+
 - **Predictive Analytics**
   - Machine learning model trained on user's history
   - Predict likely mood for upcoming days
@@ -192,6 +204,7 @@ The application already has a robust foundation:
 **Goal:** Provide users with beautiful, interactive, and deeply insightful visualizations that tell the story of their emotional journey.
 
 ### 4.1 Enhanced Analytics Dashboard
+
 - **Interactive Charts**
   - Zoom and pan on timeline charts
   - Click data points to see corresponding entries
@@ -207,6 +220,7 @@ The application already has a robust foundation:
   - **Radar Chart**: Wellness dimensions (mood, energy, stress, etc.)
 
 ### 4.2 Comparative Analytics
+
 - **Time Period Comparisons**
   - This month vs. last month
   - This year vs. last year
@@ -220,6 +234,7 @@ The application already has a robust foundation:
   - Patterns before/after significant events
 
 ### 4.3 Advanced Reports
+
 - **Monthly Summary Report**
   - Automatically generated at month-end
   - Top moods, trending emotions, key insights
@@ -233,6 +248,7 @@ The application already has a robust foundation:
   - Shareable "Year in Moods" visual summary
 
 ### 4.4 Real-Time Insights
+
 - **Live Dashboard**
   - Current mood trend (improving/declining)
   - Today's emotional temperature
@@ -246,6 +262,7 @@ The application already has a robust foundation:
 **Goal:** Enable richer forms of expression through voice, audio, photos, and video.
 
 ### 5.1 Voice-to-Text Journaling
+
 - **Web Speech API Integration**
   - Real-time speech recognition
   - Support multiple languages
@@ -259,6 +276,7 @@ The application already has a robust foundation:
   - Switch between typing and voice seamlessly
 
 ### 5.2 Audio Attachments with Transcription
+
 - **Audio Recording**
   - Record voice notes up to 5 minutes
   - Playback controls in entry view
@@ -272,6 +290,7 @@ The application already has a robust foundation:
   - Multi-language support
 
 ### 5.3 Enhanced Photo Features
+
 - **Photo Journal Features**
   - Multiple photos per entry (gallery view)
   - Photo filters and basic editing
@@ -285,6 +304,7 @@ The application already has a robust foundation:
   - Export photos separately
 
 ### 5.4 Video Support (Future)
+
 - **Short Video Entries**
   - Record 60-second video reflections
   - Video thumbnails in entry list
@@ -298,6 +318,7 @@ The application already has a robust foundation:
 **Goal:** Encourage consistent journaling through intelligent, personalized, and non-intrusive reminders.
 
 ### 6.1 Adaptive Reminder System
+
 - **Learning Algorithms**
   - Learn user's journaling patterns
   - Find optimal reminder times based on past behavior
@@ -312,6 +333,7 @@ The application already has a robust foundation:
   - Streak protection alert
 
 ### 6.2 Contextual Notifications
+
 - **Insight Notifications**
   - "You've had 5 positive days in a row! 🎉"
   - "You mentioned 'stress' 7 times this week. Time for self-care?"
@@ -323,6 +345,7 @@ The application already has a robust foundation:
   - "Beautiful weather—perfect day for outdoor reflection"
 
 ### 6.3 Notification Customization
+
 - **Granular Controls**
   - Choose which notification types to receive
   - Set quiet hours
@@ -337,6 +360,7 @@ The application already has a robust foundation:
 **Goal:** Enable optional community connection while maintaining strict privacy controls.
 
 ### 7.1 Anonymous Sharing
+
 - **Selective Sharing**
   - Share individual entries anonymously (opt-in)
   - Share insights without personal details
@@ -344,6 +368,7 @@ The application already has a robust foundation:
   - Export entries as shareable images
 
 ### 7.2 Community Inspiration
+
 - **Daily Prompt Community**
   - Shared daily journaling prompt
   - See how many others responded (no content shown)
@@ -355,6 +380,7 @@ The application already has a robust foundation:
   - No direct messaging (prevents harassment)
 
 ### 7.3 Accountability Partners
+
 - **Buddy System**
   - Connect with one accountability partner
   - See each other's streak status only
@@ -368,6 +394,7 @@ The application already has a robust foundation:
 **Goal:** Let users make the journal truly their own through deep customization.
 
 ### 8.1 Themes & Appearance
+
 - **Visual Themes**
   - Expanded color palette (20+ theme options)
   - Seasonal themes (auto-switching)
@@ -376,6 +403,7 @@ The application already has a robust foundation:
   - Layout density (compact/comfortable/spacious)
 
 ### 8.2 Journal Templates
+
 - **Pre-built Templates**
   - Gratitude journal template
   - Dream journal template
@@ -390,6 +418,7 @@ The application already has a robust foundation:
   - Share templates (anonymously)
 
 ### 8.3 Dashboard Customization
+
 - **Widget System**
   - Drag-and-drop dashboard builder
   - Choose which charts/stats to display
@@ -403,6 +432,7 @@ The application already has a robust foundation:
 **Goal:** Push the boundaries of AI-assisted journaling with cutting-edge features.
 
 ### 9.1 AI Writing Assistant
+
 - **Real-Time Suggestions**
   - Grammar and spelling correction
   - Style improvements
@@ -410,6 +440,7 @@ The application already has a robust foundation:
   - "Consider exploring this feeling deeper"
 
 ### 9.2 AI Summarization
+
 - **Smart Summaries**
   - Daily summary of entry
   - Weekly narrative summary
@@ -417,6 +448,7 @@ The application already has a robust foundation:
   - Extract key insights automatically
 
 ### 9.3 AI-Powered Insights
+
 - **Deep Pattern Recognition**
   - GPT-4 level analysis of long-term patterns
   - Generate personalized growth plan
@@ -424,6 +456,7 @@ The application already has a robust foundation:
   - Suggest areas for personal development
 
 ### 9.4 Conversational Memory
+
 - **Persistent Context**
   - AI remembers past conversations
   - References previous entries in responses
@@ -437,6 +470,7 @@ The application already has a robust foundation:
 **Goal:** Make this the most secure and privacy-respecting journaling app available.
 
 ### 10.1 End-to-End Encryption (E2EE)
+
 - **Zero-Knowledge Architecture**
   - Client-side encryption before upload
   - Server never has access to decrypted content
@@ -444,6 +478,7 @@ The application already has a robust foundation:
   - Backup key recovery system
 
 ### 10.2 Privacy Dashboard
+
 - **Transparency Center**
   - Show exactly what data is stored
   - AI provider usage logs (when AI is enabled)
@@ -452,6 +487,7 @@ The application already has a robust foundation:
   - Right to be forgotten (complete deletion)
 
 ### 10.3 Advanced Security Options
+
 - **Additional Protection**
   - Biometric lock for app
   - Face ID / fingerprint authentication
@@ -466,6 +502,7 @@ The application already has a robust foundation:
 **Goal:** Reach users on every platform they use.
 
 ### 11.1 Native Mobile Apps
+
 - **iOS & Android**
   - Native apps using Capacitor/Tauri
   - Platform-specific UI adaptations
@@ -474,6 +511,7 @@ The application already has a robust foundation:
   - Apple Watch / Wear OS complications
 
 ### 11.2 Desktop Applications
+
 - **Electron Desktop Apps**
   - Windows, macOS, Linux native apps
   - System tray integration
@@ -481,6 +519,7 @@ The application already has a robust foundation:
   - Offline-first with auto-sync
 
 ### 11.3 Browser Extensions
+
 - **Quick Capture Extension**
   - Chrome/Firefox/Safari extensions
   - Quick entry from any webpage
@@ -492,6 +531,7 @@ The application already has a robust foundation:
 ## 📈 Success Metrics & KPIs
 
 Track progress with clear metrics:
+
 - **Engagement**: Daily active users, retention rate, avg entries per user
 - **Feature Adoption**: PWA install rate, voice journaling usage, AI companion engagement
 - **Wellness Impact**: Sentiment trend improvement, streak completion rate
@@ -503,6 +543,7 @@ Track progress with clear metrics:
 ## 🛠️ Technical Considerations
 
 ### Architecture Improvements
+
 - **State Management**: Consider Svelte stores or XState for complex state
 - **Real-time Sync**: WebSocket or Server-Sent Events for multi-device sync
 - **Database**: Consider PostgreSQL for advanced features (vector search, better concurrency)
@@ -511,6 +552,7 @@ Track progress with clear metrics:
 - **Monitoring**: Sentry for errors, PostHog for analytics
 
 ### Performance Optimization
+
 - **Code Splitting**: Lazy load routes and heavy components
 - **Image Optimization**: WebP format, responsive images, lazy loading
 - **Caching Strategy**: Aggressive caching with smart invalidation
@@ -521,6 +563,7 @@ Track progress with clear metrics:
 ## 🎯 Implementation Priority Matrix
 
 **Immediate (Q1 2025)**
+
 1. PWA Implementation (1.1)
 2. Mobile UX Optimization (1.2)
 3. Achievement System (2.1)
@@ -528,6 +571,7 @@ Track progress with clear metrics:
 5. Landing Page Redesign
 
 **Short-term (Q2 2025)**
+
 1. Voice Journaling (5.1)
 2. Advanced Streak System (2.2)
 3. Personalized Recommendations (3.2)
@@ -535,6 +579,7 @@ Track progress with clear metrics:
 5. Smart Reminders (6.1)
 
 **Medium-term (Q3-Q4 2025)**
+
 1. Wellness Challenges (2.3)
 2. Wellness Resources Library (3.3)
 3. Advanced Data Visualization (4.2-4.4)
@@ -542,6 +587,7 @@ Track progress with clear metrics:
 5. E2E Encryption (10.1)
 
 **Long-term (2026+)**
+
 1. Native Mobile Apps (11.1)
 2. Social Features (7.1-7.3)
 3. Desktop Applications (11.2)

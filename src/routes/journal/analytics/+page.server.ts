@@ -1,13 +1,22 @@
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { entry } from '$lib/server/db/schema';
-import { eq, desc, gte, sql } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
+import { redirect } from '@sveltejs/kit';
+
+type EntryData = {
+	id: string;
+	mood: string;
+	sentimentScore: number | null;
+	sentimentLabel: string | null;
+	createdAt: Date;
+};
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const user = locals.user;
 
-	if (!user?.id) {
-		throw new Error('Unauthorized');
+	if (!user) {
+		throw redirect(303, '/auth/login');
 	}
 
 	// Get entries from the last 90 days
@@ -122,7 +131,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 // Analyze patterns for predictions
-function analyzePredictivePatterns(entries: any[]) {
+function analyzePredictivePatterns(entries: EntryData[]) {
 	const insights = {
 		dayOfWeekPattern: {} as Record<string, { avgSentiment: number; count: number }>,
 		timeOfDayPattern: {} as Record<string, { avgSentiment: number; count: number }>,
@@ -178,13 +187,14 @@ function analyzePredictivePatterns(entries: any[]) {
 		const prev7 = entries.slice(7, 14);
 		const last7Avg = last7.reduce((sum, e) => sum + (e.sentimentScore || 0), 0) / 7;
 		const prev7Avg = prev7.reduce((sum, e) => sum + (e.sentimentScore || 0), 0) / 7;
-		
+
 		if (last7Avg > prev7Avg + 10) {
 			insights.trendDirection = 'improving';
 			insights.forecast = 'Your mood has been improving lately. Keep up the positive momentum!';
 		} else if (last7Avg < prev7Avg - 10) {
 			insights.trendDirection = 'declining';
-			insights.forecast = 'Your mood seems to be dipping. Consider self-care activities or reaching out for support.';
+			insights.forecast =
+				'Your mood seems to be dipping. Consider self-care activities or reaching out for support.';
 		} else {
 			insights.trendDirection = 'stable';
 			insights.forecast = 'Your mood has been stable. Consistency is great!';
@@ -192,23 +202,32 @@ function analyzePredictivePatterns(entries: any[]) {
 	}
 
 	// Generate recommendations
-	const worstDay = Object.entries(insights.dayOfWeekPattern)
-		.sort((a, b) => a[1].avgSentiment - b[1].avgSentiment)[0];
-	const bestDay = Object.entries(insights.dayOfWeekPattern)
-		.sort((a, b) => b[1].avgSentiment - a[1].avgSentiment)[0];
-	
+	const worstDay = Object.entries(insights.dayOfWeekPattern).sort(
+		(a, b) => a[1].avgSentiment - b[1].avgSentiment
+	)[0];
+	const bestDay = Object.entries(insights.dayOfWeekPattern).sort(
+		(a, b) => b[1].avgSentiment - a[1].avgSentiment
+	)[0];
+
 	if (worstDay && worstDay[1].avgSentiment < -20) {
-		insights.recommendations.push(`${worstDay[0]}s tend to be challenging. Plan something enjoyable or relaxing.`);
+		insights.recommendations.push(
+			`${worstDay[0]}s tend to be challenging. Plan something enjoyable or relaxing.`
+		);
 	}
 	if (bestDay && bestDay[1].avgSentiment > 30) {
-		insights.recommendations.push(`${bestDay[0]}s are your best days! Use this energy for important tasks.`);
+		insights.recommendations.push(
+			`${bestDay[0]}s are your best days! Use this energy for important tasks.`
+		);
 	}
 
-	const worstTime = Object.entries(insights.timeOfDayPattern)
-		.sort((a, b) => a[1].avgSentiment - b[1].avgSentiment)[0];
+	const worstTime = Object.entries(insights.timeOfDayPattern).sort(
+		(a, b) => a[1].avgSentiment - b[1].avgSentiment
+	)[0];
 	if (worstTime && worstTime[1].avgSentiment < -10) {
-		insights.recommendations.push(`${worstTime[0]} seems difficult. Try scheduling breaks or pleasant activities then.`);
+		insights.recommendations.push(
+			`${worstTime[0]} seems difficult. Try scheduling breaks or pleasant activities then.`
+		);
 	}
 
 	return insights;
-};
+}

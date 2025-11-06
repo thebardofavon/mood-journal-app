@@ -4,6 +4,8 @@
 	import DOMPurify from 'dompurify';
 	import { browser } from '$app/environment';
 	import TemplateSelector from '$lib/components/TemplateSelector.svelte';
+	import { safeHtml } from '$lib/actions/safeHtml';
+	import VoiceRecorder from '$lib/components/VoiceRecorder.svelte';
 
 	let { data, form } = $props();
 
@@ -49,6 +51,13 @@
 	function clearDraft() {
 		if (browser) {
 			localStorage.removeItem(AUTOSAVE_KEY);
+		}
+	}
+
+	function handleVoiceTranscript(transcript: string) {
+		if (transcript && transcript.trim()) {
+			// Append transcript to existing content
+			content = content ? content + '\n\n' + transcript : transcript;
 		}
 	}
 
@@ -247,45 +256,53 @@
 	<title>New Entry | Mood Journal</title>
 </svelte:head>
 
-<div class="min-h-screen bg-background">
-	<div class="max-w-5xl mx-auto px-4 py-8">
+<div class="bg-background min-h-screen">
+	<div class="mx-auto max-w-5xl px-4 py-8">
 		<!-- Header -->
 		<div class="mb-8">
-			<div class="flex items-center gap-4 mb-4">
-				<a href="/journal" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200">
+			<div class="mb-4 flex items-center gap-4">
+				<a
+					href="/journal"
+					class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+				>
 					← Back to Journal
 				</a>
 			</div>
 			<h1 class="text-3xl font-bold text-gray-900 dark:text-white">New Entry</h1>
-			<p class="text-gray-600 dark:text-gray-400 mt-2">Write your thoughts for today</p>
+			<p class="mt-2 text-gray-600 dark:text-gray-400">Write your thoughts for today</p>
 		</div>
 
 		{#if form?.error}
-			<div class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg">
+			<div class="mb-6 rounded-lg bg-red-50 p-4 text-red-600 dark:bg-red-900/20 dark:text-red-400">
 				{form.error}
 			</div>
 		{/if}
 
-		<form method="POST" use:enhance={() => {
-			submitting = true;
-			return async ({ update }) => {
-				await update();
-				submitting = false;
-				clearDraft();
-			};
-		}}>
-			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+		<form
+			method="POST"
+			use:enhance={() => {
+				submitting = true;
+				return async ({ update }) => {
+					await update();
+					submitting = false;
+					clearDraft();
+				};
+			}}
+		>
+			<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 				<!-- Editor Section -->
 				<div class="space-y-6">
 					<!-- Template Selector -->
-					<div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-						<h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Start with a Template</h2>
+					<div class="rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+						<h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+							Start with a Template
+						</h2>
 						<TemplateSelector onSelectTemplate={handleTemplateSelect} />
 					</div>
 
 					<!-- Mood Selector -->
-					<div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-						<div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+					<div class="rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+						<div class="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">
 							How are you feeling?
 						</div>
 						<div class="grid grid-cols-5 gap-3">
@@ -293,9 +310,10 @@
 								<button
 									type="button"
 									onclick={() => (mood = m)}
-									class="flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all {mood === m
-										? 'border-gray-900 dark:border-white bg-gray-100 dark:bg-gray-800'
-										: 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'}"
+									class="flex flex-col items-center gap-2 rounded-lg border-2 p-3 transition-all {mood ===
+									m
+										? 'border-gray-900 bg-gray-100 dark:border-white dark:bg-gray-800'
+										: 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'}"
 								>
 									<span class="text-3xl">
 										{#if m === 'happy'}😊
@@ -305,7 +323,9 @@
 										{:else if m === 'excited'}🤩
 										{/if}
 									</span>
-									<span class="text-xs font-medium capitalize text-gray-700 dark:text-gray-300">{m}</span>
+									<span class="text-xs font-medium text-gray-700 capitalize dark:text-gray-300"
+										>{m}</span
+									>
 								</button>
 							{/each}
 						</div>
@@ -313,33 +333,76 @@
 					</div>
 
 					<!-- Editor -->
-					<div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-						<div class="border-b border-gray-200 dark:border-gray-700 p-4">
+					<div class="overflow-hidden rounded-xl bg-white shadow-lg dark:bg-gray-800">
+						<div class="border-b border-gray-200 p-4 dark:border-gray-700">
 							<div class="flex flex-wrap gap-2">
-								<button type="button" onclick={() => wrapSelection('**')} class="px-3 py-1 text-sm rounded bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600" title="Bold (Cmd+B)">
+								<button
+									type="button"
+									onclick={() => wrapSelection('**')}
+									class="rounded bg-gray-100 px-3 py-1 text-sm hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+									title="Bold (Cmd+B)"
+								>
 									<strong>B</strong>
 								</button>
-								<button type="button" onclick={() => wrapSelection('*')} class="px-3 py-1 text-sm rounded bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600" title="Italic (Cmd+I)">
+								<button
+									type="button"
+									onclick={() => wrapSelection('*')}
+									class="rounded bg-gray-100 px-3 py-1 text-sm hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+									title="Italic (Cmd+I)"
+								>
 									<em>I</em>
 								</button>
-								<button type="button" onclick={() => addLinePrefix('# ')} class="px-3 py-1 text-sm rounded bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600" title="Heading">
+								<button
+									type="button"
+									onclick={() => addLinePrefix('# ')}
+									class="rounded bg-gray-100 px-3 py-1 text-sm hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+									title="Heading"
+								>
 									H1
 								</button>
-								<button type="button" onclick={() => addLinePrefix('- ')} class="px-3 py-1 text-sm rounded bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600" title="List">
+								<button
+									type="button"
+									onclick={() => addLinePrefix('- ')}
+									class="rounded bg-gray-100 px-3 py-1 text-sm hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+									title="List"
+								>
 									List
 								</button>
-								<button type="button" onclick={insertCodeBlock} class="px-3 py-1 text-sm rounded bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600" title="Code Block">
+								<button
+									type="button"
+									onclick={insertCodeBlock}
+									class="rounded bg-gray-100 px-3 py-1 text-sm hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+									title="Code Block"
+								>
 									Code
 								</button>
-								<button type="button" onclick={insertLink} class="px-3 py-1 text-sm rounded bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600" title="Link">
+								<button
+									type="button"
+									onclick={insertLink}
+									class="rounded bg-gray-100 px-3 py-1 text-sm hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+									title="Link"
+								>
 									Link
 								</button>
-								<button type="button" onclick={insertHorizontalRule} class="px-3 py-1 text-sm rounded bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600" title="Horizontal Rule">
+								<button
+									type="button"
+									onclick={insertHorizontalRule}
+									class="rounded bg-gray-100 px-3 py-1 text-sm hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+									title="Horizontal Rule"
+								>
 									HR
 								</button>
-								<label class="px-3 py-1 text-sm rounded bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer" title="Upload">
+								<label
+									class="cursor-pointer rounded bg-gray-100 px-3 py-1 text-sm hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+									title="Upload"
+								>
 									📎
-									<input type="file" class="hidden" multiple onchange={(e) => handleUpload(e.currentTarget.files)} />
+									<input
+										type="file"
+										class="hidden"
+										multiple
+										onchange={(e) => handleUpload(e.currentTarget.files)}
+									/>
 								</label>
 							</div>
 						</div>
@@ -357,15 +420,23 @@
 								bind:value={content}
 								onkeydown={onEditorKeyDown}
 								placeholder="Start writing your journal entry... (Markdown supported)"
-								class="w-full min-h-[500px] p-6 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 resize-none focus:outline-none"
+								class="min-h-[500px] w-full resize-none bg-transparent p-6 text-gray-900 placeholder-gray-400 focus:outline-none dark:text-white"
 								required
 							></textarea>
 							{#if uploading}
-								<div class="absolute top-4 right-4 px-3 py-1 bg-gray-1000 text-white rounded-full text-sm">
+								<div
+									class="bg-gray-1000 absolute top-4 right-4 rounded-full px-3 py-1 text-sm text-white"
+								>
 									Uploading...
 								</div>
 							{/if}
 						</div>
+					</div>
+
+					<!-- Voice Recorder -->
+					<div class="rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+						<h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Voice Journaling</h3>
+						<VoiceRecorder onTranscript={handleVoiceTranscript} />
 					</div>
 
 					<!-- Submit Button -->
@@ -373,11 +444,14 @@
 						<button
 							type="submit"
 							disabled={submitting || !content.trim()}
-							class="flex-1 px-6 py-3 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white dark:text-gray-900 font-semibold rounded-lg transition-colors disabled:cursor-not-allowed"
+							class="flex-1 rounded-lg bg-gray-900 px-6 py-3 font-semibold text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 dark:disabled:bg-gray-700"
 						>
 							{submitting ? 'Saving...' : 'Save Entry'}
 						</button>
-						<a href="/journal" class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-center">
+						<a
+							href="/journal"
+							class="rounded-lg bg-gray-200 px-6 py-3 text-center font-semibold text-gray-900 transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+						>
 							Cancel
 						</a>
 					</div>
@@ -385,12 +459,10 @@
 
 				<!-- Preview Section -->
 				<div class="space-y-6">
-					<div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sticky top-8">
-						<h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Preview</h2>
-						<div class="prose dark:prose-invert max-w-none">
-							{#if content.trim()}
-								{@html previewHtml}
-							{:else}
+					<div class="sticky top-8 rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+						<h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Preview</h2>
+						<div class="prose max-w-none dark:prose-invert" use:safeHtml={content.trim() ? previewHtml : ''}>
+							{#if !content.trim()}
 								<p class="text-gray-400 italic">Your preview will appear here...</p>
 							{/if}
 						</div>

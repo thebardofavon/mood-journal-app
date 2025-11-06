@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		}
 
 		const id = String(form.get('id') || '').trim();
-		
+
 		// Validate entry ID
 		if (!id) {
 			return json({ ok: false, error: 'Entry ID is required' }, { status: 400 });
@@ -42,25 +42,16 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 				.returning({ id: table.entry.id });
 
 			if (result.length === 0) {
-				return json(
-					{ ok: false, error: 'Entry not found or access denied' },
-					{ status: 404 }
-				);
+				return json({ ok: false, error: 'Entry not found or access denied' }, { status: 404 });
 			}
 
 			return json({ ok: true, deletedId: id });
 		} catch (dbError) {
 			console.error('[entry/delete] Database error:', dbError);
-			return json(
-				{ ok: false, error: 'Failed to delete entry' },
-				{ status: 500 }
-			);
+			return json({ ok: false, error: 'Failed to delete entry' }, { status: 500 });
 		}
 	} catch (error) {
 		console.error('[entry/delete] Unexpected error:', error);
-		return json(
-			{ ok: false, error: 'An unexpected error occurred' },
-			{ status: 500 }
-		);
+		return json({ ok: false, error: 'An unexpected error occurred' }, { status: 500 });
 	}
 };

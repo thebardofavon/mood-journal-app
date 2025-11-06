@@ -3,9 +3,10 @@ import { Groq } from 'groq-sdk';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { env } from './env';
 import { db } from './db';
-import { conversation, entry, aiSettings } from './db/schema';
-import type { AiSettings } from './db/schema';
+import { conversation, entry, aiSettings, entryEmbedding } from './db/schema';
+import type { AiSettings, Entry } from './db/schema';
 import { eq, desc, and } from 'drizzle-orm';
+import { parseEmbedding, serializeEmbedding, cosineSimilarity } from './vector';
 
 /**
  * AI Conversational Companion
@@ -434,6 +435,31 @@ export async function chat(
 	const history = await getConversationHistory(userId, entryId, 10);
 	const journalContext = await buildJournalContext(userId, entryId);
 
+	// Retrieve similar entries using RAG
+	let ragContext = '';
+	try {
+		const similarEntries = await retrieveSimilarEntries(userMessage, userId, settings, 3, entryId);
+		if (similarEntries.length > 0) {
+			ragContext =
+				'\n\nRelevant past entries for additional context:\n' +
+				similarEntries
+					.map(({ entry, similarity }) => {
+						const date = new Date(entry.createdAt).toLocaleDateString();
+						const sentiment =
+							entry.sentimentLabel === 'POSITIVE'
+								? '😊'
+								: entry.sentimentLabel === 'NEGATIVE'
+									? '😔'
+									: '😐';
+						return `${date} ${sentiment} (relevance: ${(similarity * 100).toFixed(0)}%):\n"${entry.content}"`;
+					})
+					.join('\n\n');
+		}
+	} catch (error) {
+		console.error('RAG retrieval failed:', error);
+		// Continue without RAG context if retrieval fails
+	}
+
 	const systemPrompt = `You are a compassionate AI companion for a mood journal app. Your role is to help users reflect on their emotions, identify patterns, and gain insights from their journal entries.
 
 Guidelines:
@@ -444,9 +470,9 @@ Guidelines:
 - Offer gentle insights, not advice
 - Respect privacy and maintain confidentiality
 - Keep responses conversational (2-4 sentences)
-- Use the journal context to provide personalized support
+- Use the journal context and any relevant past entries to provide personalized support
 
-${journalContext}`;
+${journalContext}${ragContext}`;
 
 	// Build messages array
 	const messages: Message[] = [
@@ -530,4 +556,172 @@ export async function clearConversation(userId: string, entryId?: string) {
 		: eq(conversation.userId, userId);
 
 	await db.delete(conversation).where(query);
+}
+
+/**
+ * Generate embeddings for a text using OpenAI
+ */
+async function generateOpenAIEmbedding(text: string, apiKey: string): Promise<number[]> {
+	const client = new OpenAI({ apiKey });
+	const response = await client.embeddings.create({
+		model: 'text-embedding-3-small',
+		input: text,
+		encoding_format: 'float'
+	});
+	return response.data[0].embedding;
+}
+
+/**
+ * Generate embeddings for a text using local Ollama models
+ */
+async function generateLocalEmbedding(text: string, model: string): Promise<number[]> {
+	const targetModel = model.trim().length > 0 ? model.trim() : 'nomic-embed-text';
+
+	// Check if Ollama is running
+	const isAvailable = await checkOllamaAvailable();
+	if (!isAvailable) {
+		throw new Error('Ollama is not running. Cannot generate embeddings.');
+	}
+
+	try {
+		const response = await fetch(`${OLLAMA_BASE_URL}/api/embeddings`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				model: targetModel,
+				prompt: text
+			})
+		});
+
+		if (!response.ok) {
+			const error = await response.text();
+			throw new Error(`Ollama embedding API error: ${error}`);
+		}
+
+		const data = await response.json();
+		const embedding = data.embedding;
+
+		if (!Array.isArray(embedding) || !embedding.every((n) => typeof n === 'number')) {
+			throw new Error('Invalid embedding response from Ollama');
+		}
+
+		return embedding;
+	} catch (error) {
+		if (error instanceof Error && error.message.includes('Ollama')) {
+			throw error;
+		}
+		throw new Error(
+			`Failed to generate embedding: ${error instanceof Error ? error.message : 'Unknown error'}`
+		);
+	}
+}
+
+/**
+ * Generate embedding for text based on provider config
+ */
+async function generateEmbedding(text: string, providerConfig: ProviderConfig): Promise<number[]> {
+	switch (providerConfig.provider) {
+		case 'openai':
+			return generateOpenAIEmbedding(text, providerConfig.apiKey);
+		case 'local':
+		default:
+			return generateLocalEmbedding(text, providerConfig.model);
+	}
+}
+
+/**
+ * Store embedding for a journal entry
+ */
+export async function storeEntryEmbedding(
+	entryId: string,
+	content: string,
+	settings: AiSettings | null
+): Promise<void> {
+	try {
+		const providerConfig = resolveProviderConfig(settings);
+		const embedding = await generateEmbedding(content, providerConfig);
+		const embeddingJson = serializeEmbedding(embedding);
+		const model =
+			providerConfig.provider === 'openai' ? 'text-embedding-3-small' : providerConfig.model;
+
+		// Check if embedding already exists
+		const existing = await db
+			.select()
+			.from(entryEmbedding)
+			.where(eq(entryEmbedding.entryId, entryId))
+			.get();
+
+		const now = new Date();
+		if (existing) {
+			// Update existing embedding
+			await db
+				.update(entryEmbedding)
+				.set({
+					embedding: embeddingJson,
+					embeddingModel: model,
+					updatedAt: now
+				})
+				.where(eq(entryEmbedding.entryId, entryId));
+		} else {
+			// Create new embedding
+			await db.insert(entryEmbedding).values({
+				id: crypto.randomUUID(),
+				entryId,
+				embedding: embeddingJson,
+				embeddingModel: model,
+				createdAt: now,
+				updatedAt: now
+			});
+		}
+	} catch (error) {
+		console.error('Failed to store entry embedding:', error);
+		// Don't throw - embedding generation failure shouldn't break journal entry creation
+	}
+}
+
+/**
+ * Retrieve similar entries based on semantic similarity
+ */
+export async function retrieveSimilarEntries(
+	query: string,
+	userId: string,
+	settings: AiSettings | null,
+	limit: number = 5,
+	entryIdToExclude?: string
+): Promise<Array<{ entry: Entry; similarity: number }>> {
+	try {
+		const providerConfig = resolveProviderConfig(settings);
+		const queryEmbedding = await generateEmbedding(query, providerConfig);
+
+		// Get all embeddings for user's entries
+		const userEmbeddings = await db
+			.select({
+				embedding: entryEmbedding.embedding,
+				entryId: entryEmbedding.entryId,
+				entry: entry
+			})
+			.from(entryEmbedding)
+			.innerJoin(entry, eq(entryEmbedding.entryId, entry.id))
+			.where(eq(entry.userId, userId))
+			.all();
+
+		if (userEmbeddings.length === 0) {
+			return [];
+		}
+
+		// Parse embeddings and calculate similarities
+		const similarities = userEmbeddings
+			.filter((e) => e.entryId !== entryIdToExclude) // Exclude the current entry if specified
+			.map((e) => ({
+				entry: e.entry,
+				similarity: cosineSimilarity(queryEmbedding, parseEmbedding(e.embedding))
+			}))
+			.sort((a, b) => b.similarity - a.similarity)
+			.slice(0, limit);
+
+		return similarities;
+	} catch (error) {
+		console.error('Failed to retrieve similar entries:', error);
+		return [];
+	}
 }

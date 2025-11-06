@@ -4,6 +4,8 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { Button } from '$lib/components/ui/button';
 	import { resolve } from '$app/paths';
+	import InstallPrompt from '$lib/components/InstallPrompt.svelte';
+	import BottomNav from '$lib/components/BottomNav.svelte';
 
 	let { children, data } = $props();
 
@@ -58,4 +60,6 @@
 		</div>
 	</header>
 	{@render children?.()}
+	<BottomNav />
+	<InstallPrompt />
 </div>

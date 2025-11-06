@@ -41,9 +41,7 @@ function sanitizeFilename(filename: string): string {
 	// Remove any path components
 	const basename = path.basename(filename);
 	// Remove dangerous characters and limit length
-	return basename
-		.replace(/[^a-zA-Z0-9._-]/g, '_')
-		.slice(0, 100);
+	return basename.replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 100);
 }
 
 /**
@@ -52,7 +50,7 @@ function sanitizeFilename(filename: string): string {
 function getExtensionForMimeType(mimeType: string): string {
 	const typeInfo = ALLOWED_TYPES[mimeType as keyof typeof ALLOWED_TYPES];
 	if (!typeInfo) return '';
-	
+
 	const ext = typeInfo.ext;
 	return (Array.isArray(ext) ? ext[0] : ext) as string;
 }
@@ -127,7 +125,8 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
 		if (!verifyFileSignature(buffer, mimeType)) {
 			return json(
 				{
-					error: 'File content does not match declared type. Possible file corruption or security issue.'
+					error:
+						'File content does not match declared type. Possible file corruption or security issue.'
 				},
 				{ status: 400 }
 			);
@@ -142,7 +141,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
 
 		// Ensure uploads directory exists with proper permissions
 		const uploadsDir = path.resolve(process.cwd(), 'static', 'uploads');
-		
+
 		// Prevent path traversal in uploads directory
 		const resolvedPath = path.resolve(uploadsDir, filename);
 		if (!resolvedPath.startsWith(uploadsDir)) {
@@ -194,9 +193,6 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
 		});
 	} catch (error) {
 		console.error('[upload] Unexpected error:', error);
-		return json(
-			{ error: 'An unexpected error occurred during file upload' },
-			{ status: 500 }
-		);
+		return json({ error: 'An unexpected error occurred during file upload' }, { status: 500 });
 	}
 };

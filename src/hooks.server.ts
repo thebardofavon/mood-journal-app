@@ -32,17 +32,14 @@ const handleRequestValidation: Handle = async ({ event, resolve }) => {
 	if (contentLength) {
 		const size = parseInt(contentLength, 10);
 		const maxSize = 20 * 1024 * 1024; // 20MB max request size
-		
+
 		if (size > maxSize) {
 			console.warn('[security] Request too large:', {
 				path: event.url.pathname,
 				size,
 				maxSize
 			});
-			return json(
-				{ error: 'Request body too large' },
-				{ status: 413 }
-			);
+			return json({ error: 'Request body too large' }, { status: 413 });
 		}
 	}
 
@@ -50,7 +47,7 @@ const handleRequestValidation: Handle = async ({ event, resolve }) => {
 	if (['POST', 'PUT', 'PATCH'].includes(event.request.method)) {
 		const contentType = event.request.headers.get('content-type');
 		const path = event.url.pathname;
-		
+
 		// Skip validation for file uploads
 		if (!path.includes('/upload')) {
 			if (!contentType) {
@@ -63,8 +60,8 @@ const handleRequestValidation: Handle = async ({ event, resolve }) => {
 					'multipart/form-data',
 					'text/plain'
 				];
-				const matches = allowed.some(type => contentType.includes(type));
-				
+				const matches = allowed.some((type) => contentType.includes(type));
+
 				if (!matches) {
 					console.warn('[security] Suspicious content-type:', {
 						path,
@@ -130,12 +127,12 @@ export const handle: Handle = sequence(handleAuth, handleRequestValidation, with
 
 export const handleError: HandleServerError = ({ error, event }) => {
 	const requestId = crypto.randomUUID();
-	
+
 	// Determine if error should be logged (avoid spam from expected errors)
-	const isExpectedError = 
-		error instanceof Error && 
+	const isExpectedError =
+		error instanceof Error &&
 		(error.message.includes('redirect') || error.message.includes('Not found'));
-	
+
 	if (!isExpectedError) {
 		// Minimal structured logging without PII
 		console.error(

@@ -40,21 +40,21 @@ async function checkRedis(ip: string, limit: number, windowMs: number): Promise<
 	if (!redisClient) {
 		return { allowed: true, remaining: limit, resetAt: Date.now() + windowMs };
 	}
-	
+
 	const key = `rl:${ip}`;
 	const ttlSec = Math.ceil(windowMs / 1000);
-	
+
 	try {
 		// INCR and set EXPIRE if new
 		const count = await redisClient.incr(key);
 		if (count === 1) {
 			await redisClient.expire(key, ttlSec);
 		}
-		
+
 		const remaining = Math.max(0, limit - count);
 		const ttl = await redisClient.ttl(key);
-		const resetAt = Date.now() + (ttl * 1000);
-		
+		const resetAt = Date.now() + ttl * 1000;
+
 		if (count > limit) {
 			return {
 				allowed: false,
@@ -63,7 +63,7 @@ async function checkRedis(ip: string, limit: number, windowMs: number): Promise<
 				retryAfter: ttl
 			};
 		}
-		
+
 		return {
 			allowed: true,
 			remaining,
@@ -79,7 +79,7 @@ async function checkRedis(ip: string, limit: number, windowMs: number): Promise<
 function checkMemory(ip: string, limit: number, windowMs: number): RateLimitResult {
 	const now = Date.now();
 	const entry = ipMap.get(ip);
-	
+
 	if (!entry || entry.expiresAt <= now) {
 		const resetAt = now + windowMs;
 		ipMap.set(ip, { count: 1, expiresAt: resetAt, resetAt });
@@ -98,7 +98,7 @@ function checkMemory(ip: string, limit: number, windowMs: number): RateLimitResu
 			retryAfter: Math.ceil((entry.resetAt - now) / 1000)
 		};
 	}
-	
+
 	entry.count += 1;
 	return {
 		allowed: true,
@@ -114,11 +114,7 @@ function checkMemory(ip: string, limit: number, windowMs: number): RateLimitResu
  * @param windowMs Time window in milliseconds
  * @returns Rate limit result with metadata
  */
-export async function check(
-	ip: string,
-	limit = 50,
-	windowMs = 60_000
-): Promise<RateLimitResult> {
+export async function check(ip: string, limit = 50, windowMs = 60_000): Promise<RateLimitResult> {
 	if (redisClient) {
 		return await checkRedis(ip, limit, windowMs);
 	}

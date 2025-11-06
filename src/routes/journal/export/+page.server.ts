@@ -36,7 +36,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			newest: newestDate
 		},
 		user: {
-			name: user.name || user.username,
+			name: user.username,
 			email: user.email
 		}
 	};

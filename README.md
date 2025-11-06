@@ -9,29 +9,36 @@
 ## ✨ Features
 
 ### 🧠 AI-Powered Intelligence
+
+- **🆕 Cognitive Distortion Detection**: Detect unhelpful thinking patterns (10 types from CBT) and get evidence-based reframing suggestions
 - **Sentiment Analysis**: Automatic mood detection and scoring for every entry
 - **Keyword Extraction**: Discover themes and patterns in your thoughts
 - **AI Companion**: Chat with a supportive AI that understands your journey (OpenAI, Groq, Gemini, Local Ollama)
 - **Pattern Recognition**: Identify emotional cycles and triggers
+- **Positive Anchors**: Extract and save positive evidence to revisit on tough days
 
 ### 📊 Advanced Analytics
+
 - **Mood Trends**: Visualize emotional patterns over time with interactive charts
 - **Streak Tracking**: Build consistency with journaling streaks
 - **Insights Dashboard**: Comprehensive statistics and wellness metrics
 - **Search & Discovery**: Semantic search to find past entries instantly
 
 ### 🎮 Gamification
+
 - **Achievements System**: 20+ unlockable achievements across 5 categories
 - **XP & Leveling**: Earn experience points and level up your journaling practice
 - **Progress Tracking**: Visual progress bars and milestone celebrations
 
 ### 🧘 Wellness Features
+
 - **Smart Recommendations**: Personalized wellness suggestions based on mood patterns
 - **Breathing Exercises**: Guided techniques for stress and anxiety
 - **Journaling Prompts**: 1000+ curated prompts across 5 categories
 - **Pattern Insights**: Automatic detection of anxiety, stress, and sadness patterns
 
 ### 📱 Modern Experience
+
 - **Progressive Web App**: Install on any device, works offline
 - **Beautiful UI**: Modern design with shadcn/ui components
 - **Dark Mode**: Easy on the eyes, day or night
@@ -39,6 +46,7 @@
 - **Export Options**: PDF, JSON, and Markdown export
 
 ### 🔒 Privacy & Security
+
 - **End-to-End Encryption** (roadmap)
 - **Local-First**: Your data, your device
 - **No Tracking**: No analytics, no cookies, no data mining
@@ -48,6 +56,7 @@
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 18+ and npm
 - SQLite (included with better-sqlite3)
 
@@ -103,6 +112,7 @@ The app can be installed on any device:
 ## 🎯 Roadmap Highlights
 
 ### ✅ Completed
+
 - Authentication system with OAuth support
 - NLP analysis (sentiment, keywords, entities)
 - AI companion with multi-provider support
@@ -113,12 +123,14 @@ The app can be installed on any device:
 - Wellness recommendations engine
 
 ### 🔄 In Progress
+
 - Achievement database integration and UI
 - Wellness recommendations UI
 - Voice journaling (Web Speech API)
 - Install prompt component
 
 ### 🚀 Coming Soon
+
 - Native mobile apps (iOS & Android)
 - Enhanced data visualizations (heatmaps, word clouds)
 - Smart reminders and notifications

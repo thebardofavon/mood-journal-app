@@ -484,21 +484,21 @@
 			<div class="flex gap-2">
 				<a
 					href="/journal/analytics"
-					class="inline-flex items-center gap-2 px-3 py-2 border border-border bg-background hover:bg-accent hover:text-accent-foreground rounded-lg text-sm font-medium transition-colors"
+					class="border-border bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors"
 				>
 					<span>📊</span>
 					<span>Analytics</span>
 				</a>
 				<a
 					href="/journal/search"
-					class="inline-flex items-center gap-2 px-3 py-2 border border-border bg-background hover:bg-accent hover:text-accent-foreground rounded-lg text-sm font-medium transition-colors"
+					class="border-border bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors"
 				>
 					<span>🔍</span>
 					<span>Search</span>
 				</a>
 				<a
 					href="/journal/export"
-					class="inline-flex items-center gap-2 px-3 py-2 border border-border bg-background hover:bg-accent hover:text-accent-foreground rounded-lg text-sm font-medium transition-colors"
+					class="border-border bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors"
 				>
 					<span>📥</span>
 					<span>Export</span>
@@ -513,41 +513,41 @@
 			ondragover={onDragOver}
 			ondragleave={onDragLeave}
 			ondrop={onDrop}
-			class="space-y-4 rounded-xl border bg-card p-4 {dragOver
+			class="bg-card space-y-4 rounded-xl border p-4 {dragOver
 				? 'border-primary'
 				: 'border-border'} transition-colors"
 		>
 			{#if message}
 				<div
-					class="rounded-md border border-destructive/50 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+					class="border-destructive/50 bg-destructive/10 text-destructive rounded-md border px-3 py-2 text-sm"
 				>
 					{message}
 				</div>
 			{/if}
 			{#if dragOver}
 				<div
-					class="rounded-md border border-primary/50 bg-accent px-3 py-2 text-center text-sm text-foreground"
+					class="border-primary/50 bg-accent text-foreground rounded-md border px-3 py-2 text-center text-sm"
 				>
 					Drop files here to upload
 				</div>
 			{/if}
 			{#if uploading}
 				<div class="flex items-center gap-2">
-					<div class="h-2 flex-1 rounded-full bg-secondary">
-						<div class="h-full w-full animate-pulse rounded-full bg-primary"></div>
+					<div class="bg-secondary h-2 flex-1 rounded-full">
+						<div class="bg-primary h-full w-full animate-pulse rounded-full"></div>
 					</div>
-					<span class="text-sm text-muted-foreground">Uploading...</span>
+					<span class="text-muted-foreground text-sm">Uploading...</span>
 				</div>
 			{/if}
 			<div class="flex flex-wrap gap-2">
 				<div
-					class="inline-flex items-center gap-1 rounded-md border border-border bg-background p-1 shadow-sm"
+					class="border-border bg-background inline-flex items-center gap-1 rounded-md border p-1 shadow-sm"
 				>
 					<button
 						type="button"
 						title="Bold (⌘/Ctrl+B)"
 						aria-label="Bold"
-						class="inline-flex h-8 w-8 items-center justify-center rounded hover:bg-accent hover:text-accent-foreground"
+						class="hover:bg-accent hover:text-accent-foreground inline-flex h-8 w-8 items-center justify-center rounded"
 						onclick={() => wrapSelection('**', '**')}
 					>
 						<span class="font-semibold">B</span>
@@ -556,7 +556,7 @@
 						type="button"
 						title="Italic (⌘/Ctrl+I)"
 						aria-label="Italic"
-						class="inline-flex h-8 w-8 items-center justify-center rounded hover:bg-accent hover:text-accent-foreground"
+						class="hover:bg-accent hover:text-accent-foreground inline-flex h-8 w-8 items-center justify-center rounded"
 						onclick={() => wrapSelection('*', '*')}
 					>
 						<span class="italic">I</span>
@@ -565,7 +565,7 @@
 						type="button"
 						title="Inline code"
 						aria-label="Inline code"
-						class="inline-flex h-8 w-8 items-center justify-center rounded hover:bg-accent hover:text-accent-foreground"
+						class="hover:bg-accent hover:text-accent-foreground inline-flex h-8 w-8 items-center justify-center rounded"
 						onclick={() => wrapSelection('`', '`')}
 					>
 						<span class="font-mono text-xs">`</span>
@@ -574,7 +574,7 @@
 						type="button"
 						title="Code block"
 						aria-label="Code block"
-						class="inline-flex h-8 w-8 items-center justify-center rounded hover:bg-accent hover:text-accent-foreground"
+						class="hover:bg-accent hover:text-accent-foreground inline-flex h-8 w-8 items-center justify-center rounded"
 						onclick={insertCodeBlock}
 					>
 						<svg
@@ -591,7 +591,7 @@
 						type="button"
 						title="Heading"
 						aria-label="Heading"
-						class="inline-flex h-8 w-8 items-center justify-center rounded hover:bg-accent hover:text-accent-foreground"
+						class="hover:bg-accent hover:text-accent-foreground inline-flex h-8 w-8 items-center justify-center rounded"
 						onclick={() => insertAtCursor(getTA()!, '# ')}
 					>
 						<span class="text-sm font-semibold">H</span>
@@ -600,7 +600,7 @@
 						type="button"
 						title="Bullet list"
 						aria-label="Bullet list"
-						class="inline-flex h-8 w-8 items-center justify-center rounded hover:bg-accent hover:text-accent-foreground"
+						class="hover:bg-accent hover:text-accent-foreground inline-flex h-8 w-8 items-center justify-center rounded"
 						onclick={() => insertAtCursor(getTA()!, '- ')}
 					>
 						<span class="text-sm">•</span>
@@ -609,7 +609,7 @@
 						type="button"
 						title="Link"
 						aria-label="Link"
-						class="inline-flex h-8 w-8 items-center justify-center rounded hover:bg-accent hover:text-accent-foreground"
+						class="hover:bg-accent hover:text-accent-foreground inline-flex h-8 w-8 items-center justify-center rounded"
 						onclick={insertLink}
 					>
 						<svg
@@ -629,34 +629,34 @@
 						type="button"
 						title="Horizontal rule"
 						aria-label="Horizontal rule"
-						class="inline-flex h-8 w-8 items-center justify-center rounded hover:bg-accent hover:text-accent-foreground"
+						class="hover:bg-accent hover:text-accent-foreground inline-flex h-8 w-8 items-center justify-center rounded"
 						onclick={insertHorizontalRule}
 					>
 						<span class="text-sm">—</span>
 					</button>
 				</div>
 				<div
-					class="inline-flex items-center gap-1 rounded-md border border-border bg-background p-1 shadow-sm"
+					class="border-border bg-background inline-flex items-center gap-1 rounded-md border p-1 shadow-sm"
 				>
 					<button
 						type="button"
 						title="Heading 1"
 						aria-label="Heading 1"
-						class="inline-flex h-8 items-center justify-center rounded px-2 hover:bg-accent hover:text-accent-foreground"
+						class="hover:bg-accent hover:text-accent-foreground inline-flex h-8 items-center justify-center rounded px-2"
 						onclick={() => addLinePrefix('# ')}>H1</button
 					>
 					<button
 						type="button"
 						title="Heading 2"
 						aria-label="Heading 2"
-						class="inline-flex h-8 items-center justify-center rounded px-2 hover:bg-accent hover:text-accent-foreground"
+						class="hover:bg-accent hover:text-accent-foreground inline-flex h-8 items-center justify-center rounded px-2"
 						onclick={() => addLinePrefix('## ')}>H2</button
 					>
 					<button
 						type="button"
 						title="Quote"
 						aria-label="Quote"
-						class="inline-flex h-8 w-8 items-center justify-center rounded hover:bg-accent hover:text-accent-foreground"
+						class="hover:bg-accent hover:text-accent-foreground inline-flex h-8 w-8 items-center justify-center rounded"
 						onclick={() => addLinePrefix('> ')}
 					>
 						<svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"
@@ -669,7 +669,7 @@
 						type="button"
 						title="Bulleted list"
 						aria-label="Bulleted list"
-						class="inline-flex h-8 w-8 items-center justify-center rounded hover:bg-accent hover:text-accent-foreground"
+						class="hover:bg-accent hover:text-accent-foreground inline-flex h-8 w-8 items-center justify-center rounded"
 						onclick={() => addLinePrefix('- ')}
 					>
 						<svg
@@ -689,13 +689,13 @@
 					</button>
 				</div>
 				<div
-					class="inline-flex items-center gap-1 rounded-md border border-border bg-background p-1 shadow-sm"
+					class="border-border bg-background inline-flex items-center gap-1 rounded-md border p-1 shadow-sm"
 				>
 					<button
 						type="button"
 						title="Link"
 						aria-label="Link"
-						class="inline-flex h-8 w-8 items-center justify-center rounded hover:bg-accent hover:text-accent-foreground"
+						class="hover:bg-accent hover:text-accent-foreground inline-flex h-8 w-8 items-center justify-center rounded"
 						onclick={insertLink}
 					>
 						<svg
@@ -715,7 +715,7 @@
 						type="button"
 						title="Horizontal rule"
 						aria-label="Horizontal rule"
-						class="inline-flex h-8 w-8 items-center justify-center rounded hover:bg-accent hover:text-accent-foreground"
+						class="hover:bg-accent hover:text-accent-foreground inline-flex h-8 w-8 items-center justify-center rounded"
 						onclick={insertHorizontalRule}
 					>
 						<svg
@@ -729,29 +729,25 @@
 				</div>
 			</div>
 			<div>
-				<label
-					for="content"
-					class="mb-1 block text-sm font-medium">Entry</label
-				>
+				<label for="content" class="mb-1 block text-sm font-medium">Entry</label>
 				<textarea
 					id="content"
 					name="content"
 					bind:value={content}
 					rows={8}
-					class="w-full rounded-md border border-input !bg-muted !text-foreground p-3 font-mono text-sm leading-6 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring placeholder:text-muted-foreground"
+					class="border-input !bg-muted !text-foreground focus-visible:ring-ring placeholder:text-muted-foreground w-full rounded-md border p-3 font-mono text-sm leading-6 shadow-sm focus-visible:ring-2 focus-visible:outline-none"
 					placeholder="Write your thoughts in markdown..."
 					onkeydown={onEditorKeyDown}
 				></textarea>
 			</div>
 
 			<div class="flex flex-wrap items-center gap-3">
-				<label for="mood" class="text-sm font-medium">Mood</label
-				>
+				<label for="mood" class="text-sm font-medium">Mood</label>
 				<select
 					id="mood"
 					name="mood"
 					bind:value={mood}
-					class="w-40 rounded-md border border-input !bg-muted !text-foreground p-1.5 pr-8 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					class="border-input !bg-muted !text-foreground focus-visible:ring-ring w-40 rounded-md border p-1.5 pr-8 text-sm shadow-sm focus-visible:ring-2 focus-visible:outline-none"
 				>
 					<option value="happy">Happy</option>
 					<option value="neutral">Neutral</option>
@@ -760,7 +756,7 @@
 				</select>
 				<TemplateSelector onSelectTemplate={handleTemplateSelect} />
 				<label
-					class="inline-flex cursor-pointer items-center gap-2 rounded-md border border-input bg-background px-3 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+					class="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex cursor-pointer items-center gap-2 rounded-md border px-3 py-1.5 text-sm transition-colors"
 				>
 					<input
 						type="file"
@@ -774,7 +770,7 @@
 				<button
 					type="submit"
 					disabled={submitting}
-					class="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground shadow hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
+					class="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 font-medium shadow transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					{#if submitting}
 						<div
@@ -785,14 +781,14 @@
 				</button>
 			</div>
 
-			<div class="text-xs text-muted-foreground">Attachments: {attachments.length}</div>
+			<div class="text-muted-foreground text-xs">Attachments: {attachments.length}</div>
 		</form>
 
 		<section class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
 			<div>
-				<h2 class="font-semibold mb-2">Preview</h2>
+				<h2 class="mb-2 font-semibold">Preview</h2>
 				<div
-					class="prose prose-sm prose-zinc dark:prose-invert max-w-none rounded-lg border border-border bg-card p-4 min-h-[200px]"
+					class="border-border bg-card prose prose-sm min-h-[200px] max-w-none rounded-lg border p-4 prose-zinc dark:prose-invert"
 				>
 					{#if content.trim()}
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
@@ -803,7 +799,7 @@
 				</div>
 				{#if attachments.length}
 					<div class="mt-2">
-						<div class="mb-2 text-sm text-muted-foreground">
+						<div class="text-muted-foreground mb-2 text-sm">
 							Attachments ({attachments.length})
 						</div>
 						<div class="flex flex-wrap gap-2">
@@ -813,23 +809,21 @@
 										<img
 											src={a.url}
 											alt="attachment"
-											class="h-16 w-16 rounded border border-border object-cover"
+											class="border-border h-16 w-16 rounded border object-cover"
 										/>
 										<button
 											type="button"
-											class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-xs text-destructive-foreground hover:bg-destructive/90"
+											class="bg-destructive text-destructive-foreground hover:bg-destructive/90 absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full text-xs"
 											onclick={() => (attachments = attachments.filter((att) => att.url !== a.url))}
 											title="Remove">×</button
 										>
 									</div>
 								{:else if a.type.startsWith('audio/')}
-									<div
-										class="flex items-center gap-2 rounded border border-border bg-muted p-2"
-									>
+									<div class="border-border bg-muted flex items-center gap-2 rounded border p-2">
 										<audio controls src={a.url} class="h-8 w-32"></audio>
 										<button
 											type="button"
-											class="text-sm text-destructive hover:text-destructive/90"
+											class="text-destructive hover:text-destructive/90 text-sm"
 											onclick={() => (attachments = attachments.filter((att) => att.url !== a.url))}
 											title="Remove">Remove</button
 										>
@@ -842,21 +836,19 @@
 			</div>
 
 			<div>
-				<h2
-					class="flex items-center justify-between font-semibold mb-2"
-				>
+				<h2 class="mb-2 flex items-center justify-between font-semibold">
 					Recent entries
 					<div class="flex gap-2">
 						<input
 							type="search"
 							placeholder="Search entries..."
 							bind:value={searchQuery}
-							class="w-48 rounded-md border border-input !bg-muted !text-foreground p-1.5 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring placeholder:text-muted-foreground"
+							class="border-input !bg-muted !text-foreground focus-visible:ring-ring placeholder:text-muted-foreground w-48 rounded-md border p-1.5 text-sm shadow-sm focus-visible:ring-2 focus-visible:outline-none"
 							aria-label="Search entries"
 						/>
 						<select
 							bind:value={filterMood}
-							class="w-40 rounded-md border border-input !bg-muted !text-foreground p-1.5 pr-8 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+							class="border-input !bg-muted !text-foreground focus-visible:ring-ring w-40 rounded-md border p-1.5 pr-8 text-sm shadow-sm focus-visible:ring-2 focus-visible:outline-none"
 							aria-label="Filter by mood"
 						>
 							<option value="all">All moods</option>
@@ -870,25 +862,21 @@
 				{#if paginatedEntries?.length}
 					<ul class="space-y-3">
 						{#each paginatedEntries as it (it.id)}
-							<li
-								class="rounded-lg border border-border bg-card p-3"
-							>
+							<li class="border-border bg-card rounded-lg border p-3">
 								<div class="flex items-start justify-between">
-									<div class="text-sm text-muted-foreground">
+									<div class="text-muted-foreground text-sm">
 										{formatRelativeTime(it.createdAt)} — {it.mood}
 									</div>
 									<div class="flex gap-2">
 										{#if it.local}
-											<span class="text-xs text-muted-foreground">pending</span>
+											<span class="text-muted-foreground text-xs">pending</span>
 										{:else if editingId === it.id}
-											<button
-												type="button"
-												class="text-sm hover:underline"
-												onclick={saveEdit}>Save</button
+											<button type="button" class="text-sm hover:underline" onclick={saveEdit}
+												>Save</button
 											>
 											<button
 												type="button"
-												class="text-sm text-muted-foreground hover:underline"
+												class="text-muted-foreground text-sm hover:underline"
 												onclick={cancelEditing}>Cancel</button
 											>
 										{:else}
@@ -899,7 +887,7 @@
 											>
 											<button
 												type="button"
-												class="text-sm text-destructive hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+												class="text-destructive text-sm hover:underline disabled:cursor-not-allowed disabled:opacity-50"
 												disabled={deleting.has(it.id)}
 												onclick={() => deleteEntry(it.id)}
 											>
@@ -913,11 +901,11 @@
 										<textarea
 											bind:value={editContent}
 											rows={4}
-											class="w-full rounded-md border border-input !bg-muted !text-foreground p-3 font-mono text-sm leading-6 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring placeholder:text-muted-foreground"
+											class="border-input !bg-muted !text-foreground focus-visible:ring-ring placeholder:text-muted-foreground w-full rounded-md border p-3 font-mono text-sm leading-6 shadow-sm focus-visible:ring-2 focus-visible:outline-none"
 										></textarea>
 										<select
 											bind:value={editMood}
-											class="w-40 rounded-md border border-input !bg-muted !text-foreground p-1.5 pr-8 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+											class="border-input !bg-muted !text-foreground focus-visible:ring-ring w-40 rounded-md border p-1.5 pr-8 text-sm shadow-sm focus-visible:ring-2 focus-visible:outline-none"
 										>
 											<option value="happy">Happy</option>
 											<option value="neutral">Neutral</option>
@@ -926,7 +914,7 @@
 										</select>
 									</div>
 								{:else}
-									<div class="prose prose-sm prose-zinc dark:prose-invert max-w-none mt-2">
+									<div class="prose prose-sm mt-2 max-w-none prose-zinc dark:prose-invert">
 										<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 										{@html processEntryHtml(
 											it.html || sanitize(String(marked.parse(it.content || '')))
@@ -938,7 +926,7 @@
 					</ul>
 					{#if totalPages > 1}
 						<div class="mt-4 flex items-center justify-between">
-							<div class="text-sm text-muted-foreground">
+							<div class="text-muted-foreground text-sm">
 								Showing {(currentPage - 1) * entriesPerPage + 1} to {Math.min(
 									currentPage * entriesPerPage,
 									shown.length
@@ -947,19 +935,19 @@
 							<div class="flex gap-1">
 								<button
 									type="button"
-									class="rounded-md border border-input bg-background px-3 py-1 text-sm hover:bg-accent hover:text-accent-foreground disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
+									class="border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md border px-3 py-1 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50"
 									disabled={currentPage === 1}
 									onclick={() => currentPage--}
 									aria-label="Previous page"
 								>
 									Previous
 								</button>
-								<span class="px-3 py-1 text-sm text-muted-foreground">
+								<span class="text-muted-foreground px-3 py-1 text-sm">
 									Page {currentPage} of {totalPages}
 								</span>
 								<button
 									type="button"
-									class="rounded-md border border-input bg-background px-3 py-1 text-sm hover:bg-accent hover:text-accent-foreground disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
+									class="border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md border px-3 py-1 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50"
 									disabled={currentPage === totalPages}
 									onclick={() => currentPage++}
 									aria-label="Next page"
@@ -971,7 +959,7 @@
 					{/if}
 				{:else}
 					<div
-						class="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground"
+						class="border-border text-muted-foreground rounded-lg border border-dashed p-6 text-center text-sm"
 					>
 						No entries yet.
 					</div>

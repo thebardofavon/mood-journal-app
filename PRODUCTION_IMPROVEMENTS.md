@@ -7,6 +7,7 @@ This document outlines the security, error handling, and production-grade improv
 ### 1. **Enhanced Error Handling** ✅
 
 #### Global Error Boundary
+
 - **File**: `src/+error.svelte`
 - Custom error page for all unhandled errors
 - User-friendly error messages with action buttons
@@ -14,6 +15,7 @@ This document outlines the security, error handling, and production-grade improv
 - Unique error request IDs for tracking
 
 #### Structured Error Logging
+
 - **File**: `src/hooks.server.ts`
 - JSON-formatted error logs with request context
 - No PII (Personally Identifiable Information) in logs
@@ -23,6 +25,7 @@ This document outlines the security, error handling, and production-grade improv
 ### 2. **Authentication Security** ✅
 
 #### Constant-Time Password Comparison
+
 - **File**: `src/routes/auth/login/+page.server.ts`
 - Prevents timing attacks through consistent response times
 - Added minimum delay to prevent user enumeration
@@ -30,6 +33,7 @@ This document outlines the security, error handling, and production-grade improv
 - Detailed attempt tracking with countdown messages
 
 #### Enhanced Password Validation
+
 - **File**: `src/routes/auth/register/+page.server.ts`
 - Regex-based email validation
 - Username sanitization (alphanumeric + underscore/hyphen only)
@@ -37,6 +41,7 @@ This document outlines the security, error handling, and production-grade improv
 - Argon2id with secure parameters (19 MiB memory, 2 iterations)
 
 #### Secure Cookie Configuration
+
 - `httpOnly: true` - Prevents XSS access
 - `secure: true` - HTTPS only in production
 - `sameSite: 'lax'` - CSRF protection
@@ -45,6 +50,7 @@ This document outlines the security, error handling, and production-grade improv
 ### 3. **Input Validation & Sanitization** ✅
 
 #### Centralized Validation
+
 - **File**: `src/lib/server/validation.ts`
 - Valibot schemas for all user inputs
 - Email, username, password, content, mood validators
@@ -52,6 +58,7 @@ This document outlines the security, error handling, and production-grade improv
 - Detailed validation error messages
 
 #### Server-Side Sanitization
+
 - HTML sanitization with `sanitize-html`
 - Markdown rendering with `marked`
 - Whitelisted HTML tags and attributes
@@ -60,24 +67,28 @@ This document outlines the security, error handling, and production-grade improv
 ### 4. **File Upload Security** ✅
 
 #### Magic Number Verification
+
 - **File**: `src/routes/journal/upload/+server.ts`
 - Verifies file signatures (magic numbers) match declared MIME type
 - Prevents file type spoofing attacks
 - Supported types: PNG, JPEG, WebP, GIF, MP3, OGG
 
 #### Path Traversal Prevention
+
 - Filename sanitization (removes special characters)
 - Path resolution validation
 - UUID-based random filenames
 - 10MB file size limit
 
 #### Upload Rate Limiting
+
 - 20 uploads per minute per IP
 - Integrated with rate limiting system
 
 ### 5. **Database Security & Reliability** ✅
 
 #### Connection Hardening
+
 - **File**: `src/lib/server/db/index.ts`
 - Write-Ahead Logging (WAL) for better concurrency
 - Foreign key constraints enabled
@@ -86,11 +97,13 @@ This document outlines the security, error handling, and production-grade improv
 - Directory creation with proper permissions
 
 #### Transaction Safety
+
 - Atomic operations for critical updates
 - Retry logic for primary key collisions
 - Comprehensive error handling with fallbacks
 
 #### Error Recovery
+
 - Try-catch blocks around all database operations
 - Graceful degradation (empty results vs crashes)
 - Detailed error logging without exposing sensitive data
@@ -98,6 +111,7 @@ This document outlines the security, error handling, and production-grade improv
 ### 6. **Rate Limiting Enhancements** ✅
 
 #### Progressive Rate Limiting
+
 - **File**: `src/lib/server/rateLimit.ts`
 - Detailed rate limit metadata (remaining, resetAt, retryAfter)
 - Redis support for distributed rate limiting
@@ -105,6 +119,7 @@ This document outlines the security, error handling, and production-grade improv
 - Automatic cleanup of expired entries
 
 #### Endpoint-Specific Limits
+
 - Login: 10 attempts/minute (stricter)
 - Upload: 20 files/minute
 - General API: 50 requests/minute
@@ -113,6 +128,7 @@ This document outlines the security, error handling, and production-grade improv
 ### 7. **Request Validation Middleware** ✅
 
 #### Request Size Limits
+
 - **File**: `src/hooks.server.ts`
 - 20MB maximum request size
 - Content-Type validation for POST/PUT/PATCH
@@ -120,6 +136,7 @@ This document outlines the security, error handling, and production-grade improv
 - Early rejection of oversized requests
 
 #### Content-Type Checking
+
 - Validates expected content types
 - Logs suspicious content types
 - Prevents content type confusion attacks
@@ -127,6 +144,7 @@ This document outlines the security, error handling, and production-grade improv
 ### 8. **Environment Configuration** ✅
 
 #### Validation at Startup
+
 - **File**: `src/lib/server/env.ts`
 - Valibot schema validation for all environment variables
 - Required vs optional variable distinction
@@ -135,6 +153,7 @@ This document outlines the security, error handling, and production-grade improv
 - Default values for development
 
 #### Helper Functions
+
 - `requireEnv()` - Throws error if variable missing
 - `validateProductionEnv()` - Production-specific checks
 - Environment-aware configuration
@@ -142,6 +161,7 @@ This document outlines the security, error handling, and production-grade improv
 ### 9. **Security Headers** ✅
 
 #### Comprehensive Header Set
+
 - **File**: `src/hooks.server.ts`
 - `Content-Security-Policy` (strict in production, report-only in dev)
 - `X-Frame-Options: DENY` - Clickjacking protection
@@ -154,15 +174,18 @@ This document outlines the security, error handling, and production-grade improv
 ### 10. **API Error Responses** ✅
 
 #### Standardized Error Format
+
 All API endpoints now return consistent error responses:
+
 ```json
 {
-  "ok": false,
-  "error": "Human-readable error message"
+	"ok": false,
+	"error": "Human-readable error message"
 }
 ```
 
 #### Proper HTTP Status Codes
+
 - `400` - Bad Request (validation errors)
 - `401` - Unauthorized (authentication required)
 - `403` - Forbidden (account locked, insufficient permissions)
@@ -227,18 +250,21 @@ All API endpoints now return consistent error responses:
 ## Testing Recommendations
 
 ### Unit Tests
+
 - Validation schemas
 - Sanitization functions
 - Rate limiting logic
 - Session management
 
 ### Integration Tests
+
 - Authentication flows
 - Journal entry CRUD operations
 - File upload handling
 - Error scenarios
 
 ### Security Tests
+
 - SQL injection attempts
 - XSS payloads
 - Path traversal attempts
@@ -246,6 +272,7 @@ All API endpoints now return consistent error responses:
 - Session fixation/hijacking
 
 ### Load Tests
+
 - Rate limit behavior under load
 - Database connection pooling
 - Concurrent request handling
@@ -261,6 +288,7 @@ All API endpoints now return consistent error responses:
 ## Maintenance & Updates
 
 ### Regular Tasks
+
 - Review error logs weekly
 - Rotate database backups
 - Update dependencies monthly
@@ -269,6 +297,7 @@ All API endpoints now return consistent error responses:
 - Check failed login attempts
 
 ### Security Updates
+
 - Monitor CVE databases for dependencies
 - Test updates in staging before production
 - Keep Node.js and system packages updated
@@ -277,6 +306,7 @@ All API endpoints now return consistent error responses:
 ## Additional Recommendations
 
 ### Future Enhancements
+
 1. **CSRF Tokens**: Add explicit CSRF protection for forms
 2. **2FA/MFA**: Implement two-factor authentication
 3. **Email Verification**: Verify email addresses on registration
@@ -302,6 +332,7 @@ All code includes inline comments explaining security decisions and implementati
 ## Support & Questions
 
 For questions about these security improvements or deployment best practices, refer to:
+
 - SvelteKit Security Documentation
 - OWASP Top 10 Web Application Security Risks
 - Node.js Security Best Practices

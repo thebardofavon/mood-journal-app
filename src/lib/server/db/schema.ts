@@ -136,6 +136,42 @@ export const verificationToken = sqliteTable('verification_token', {
 	expires: integer('expires', { mode: 'timestamp' }).notNull()
 });
 
+// Entry embeddings for RAG
+export const entryEmbedding = sqliteTable('entry_embedding', {
+	id: text('id').primaryKey(),
+	entryId: text('entry_id')
+		.notNull()
+		.references(() => entry.id, { onDelete: 'cascade' }),
+	embedding: text('embedding').notNull(), // JSON array of floats
+	embeddingModel: text('embedding_model').notNull(),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+});
+
+// User achievements progress
+export const userAchievement = sqliteTable('user_achievement', {
+	userId: text('user_id')
+		.notNull()
+		.references(() => user.id, { onDelete: 'cascade' }),
+	achievementId: text('achievement_id').notNull(),
+	progress: integer('progress').default(0).notNull(),
+	unlocked: integer('unlocked', { mode: 'boolean' }).default(false).notNull(),
+	unlockedAt: integer('unlocked_at', { mode: 'timestamp' }),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+});
+
+// User XP and leveling
+export const userProgress = sqliteTable('user_progress', {
+	userId: text('user_id')
+		.primaryKey()
+		.references(() => user.id, { onDelete: 'cascade' }),
+	totalXP: integer('total_xp').default(0).notNull(),
+	level: integer('level').default(1).notNull(),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+});
+
 // Export types
 export type User = typeof user.$inferSelect;
 export type Session = typeof session.$inferSelect;
@@ -147,3 +183,6 @@ export type Tag = typeof tag.$inferSelect;
 export type EntryTag = typeof entryTag.$inferSelect;
 export type Attachment = typeof attachment.$inferSelect;
 export type VerificationToken = typeof verificationToken.$inferSelect;
+export type EntryEmbedding = typeof entryEmbedding.$inferSelect;
+export type UserAchievement = typeof userAchievement.$inferSelect;
+export type UserProgress = typeof userProgress.$inferSelect;

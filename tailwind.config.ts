@@ -65,7 +65,7 @@ export default {
 						'--tw-prose-pre-code': 'hsl(var(--foreground))',
 						'--tw-prose-pre-bg': 'hsl(var(--muted))',
 						'--tw-prose-th-borders': 'hsl(var(--border))',
-						'--tw-prose-td-borders': 'hsl(var(--border))',
+						'--tw-prose-td-borders': 'hsl(var(--border))'
 					}
 				}
 			}

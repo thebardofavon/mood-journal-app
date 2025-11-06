@@ -81,7 +81,8 @@
 				{#if data.entryId}
 					Discussing a specific journal entry
 				{:else}
-					Chat about your journal entries and mood patterns
+					Chat about your journal entries and mood patterns. The AI uses relevant past entries to
+					provide personalized insights.
 				{/if}
 			</p>
 			{#if isConfigured && data.settings}

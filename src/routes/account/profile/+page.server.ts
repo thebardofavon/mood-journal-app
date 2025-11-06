@@ -37,15 +37,16 @@ export const actions: Actions = {
 		if (!locals.user) throw redirect(303, '/auth/login');
 		const form = await request.formData();
 		const username = String(form.get('username') || '').trim();
-		if (username.length < 2) return fail(400, { message: 'Username must be at least 2 characters' });
-		
+		if (username.length < 2)
+			return fail(400, { message: 'Username must be at least 2 characters' });
+
 		await db.update(table.user).set({ username }).where(eq(table.user.id, locals.user.id));
-		
+
 		// Update the session with new username
 		if (locals.session) {
 			locals.user.username = username;
 		}
-		
+
 		return { ok: true };
 	},
 	avatar: async ({ request, locals }) => {

@@ -23,12 +23,14 @@ export const actions: Actions = {
 		try {
 			const form = await request.formData();
 			const username = String(form.get('username') || '').trim();
-			const email = String(form.get('email') || '').toLowerCase().trim();
+			const email = String(form.get('email') || '')
+				.toLowerCase()
+				.trim();
 			const password = String(form.get('password') || '');
 
 			// Input validation with detailed error messages
 			const errors: string[] = [];
-			
+
 			// Username validation
 			if (!username) {
 				errors.push('Username is required');
@@ -62,11 +64,15 @@ export const actions: Actions = {
 				const hasLowerCase = /[a-z]/.test(password);
 				const hasNumber = /[0-9]/.test(password);
 				const hasSpecial = /[^A-Za-z0-9]/.test(password);
-				
-				const strengthChecks = [hasUpperCase, hasLowerCase, hasNumber, hasSpecial].filter(Boolean).length;
-				
+
+				const strengthChecks = [hasUpperCase, hasLowerCase, hasNumber, hasSpecial].filter(
+					Boolean
+				).length;
+
 				if (strengthChecks < 2) {
-					errors.push('Password should include a mix of uppercase, lowercase, numbers, and special characters');
+					errors.push(
+						'Password should include a mix of uppercase, lowercase, numbers, and special characters'
+					);
 				}
 			}
 
@@ -134,8 +140,8 @@ export const actions: Actions = {
 			try {
 				const token = generateSessionToken();
 				session = await createSession(token, id);
-				cookies.set(sessionCookieName, token, { 
-					expires: session.expires, 
+				cookies.set(sessionCookieName, token, {
+					expires: session.expires,
 					path: '/',
 					httpOnly: true,
 					secure: true,
@@ -144,8 +150,8 @@ export const actions: Actions = {
 			} catch (sessionError) {
 				console.error('[register] Session creation error:', sessionError);
 				// User created but session failed - they can still log in
-				return fail(500, { 
-					message: 'Account created but login failed. Please try logging in manually.' 
+				return fail(500, {
+					message: 'Account created but login failed. Please try logging in manually.'
 				});
 			}
 
@@ -155,7 +161,7 @@ export const actions: Actions = {
 			if (error instanceof Response && error.status === 303) {
 				throw error;
 			}
-			
+
 			console.error('[register] Unexpected error:', error);
 			return fail(500, { message: 'An unexpected error occurred. Please try again.' });
 		}
