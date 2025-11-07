@@ -223,6 +223,8 @@
 					<option value="excited">🤩 Excited</option>
 					<option value="calm">😌 Calm</option>
 					<option value="stressed">😫 Stressed</option>
+					<option value="angry">😠 Angry</option>
+					<option value="other">🤔 Other</option>
 				</select>
 			</div>
 
@@ -323,7 +325,17 @@
 											? '😢'
 											: entry.mood === 'anxious'
 												? '😰'
-												: '😐'}</span
+												: entry.mood === 'excited'
+													? '🤩'
+													: entry.mood === 'calm'
+														? '😌'
+														: entry.mood === 'stressed'
+															? '😫'
+															: entry.mood === 'angry'
+																? '😠'
+																: entry.mood === 'other'
+																	? '🤔'
+																	: '😐'}</span
 								>
 								<div>
 									<div class="font-medium text-gray-900 dark:text-white">

@@ -7,7 +7,7 @@ import { getRequestEvent } from '$app/server';
 import { allow as allowRate } from '$lib/server/rateLimit';
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
-import { analyzeSentiment, extractKeywords, extractEntities } from '$lib/server/nlp';
+import { analyzeSentiment, extractKeywords, extractEntities, detectMood } from '$lib/server/nlp';
 import { getAISettings, generateFollowUpQuestion } from '$lib/server/ai';
 import { updateUserAchievements } from '$lib/server/achievement-tracker';
 
@@ -76,6 +76,16 @@ export const createEntry = form(
 		const keywords = extractKeywords(data.content, 5);
 		const entities = extractEntities(data.content);
 
+		// Auto-generate nuanced mood from NLP analysis
+		// Detects specific emotions: anxious, stressed, excited, calm, angry, happy, sad, neutral
+		const autoMood = detectMood(data.content, sentiment.normalizedScore);
+		
+		// Debug logging
+		console.log('🔍 [Mood Detection Debug]');
+		console.log('   Content:', data.content);
+		console.log('   Sentiment Score:', sentiment.normalizedScore);
+		console.log('   Detected Mood:', autoMood);
+
 		const id = crypto.randomUUID();
 		const now = new Date();
 
@@ -84,7 +94,7 @@ export const createEntry = form(
 			id,
 			userId: user.id,
 			content: data.content,
-			mood: data.mood,
+			mood: autoMood, // Auto-generated from NLP, not user input
 			sentimentLabel: sentiment.label,
 			sentimentScore: Math.round(sentiment.normalizedScore * 100), // Store as integer -100 to +100
 			createdAt: now,
@@ -150,8 +160,8 @@ export const createEntry = form(
 		}
 
 		// Update achievements
-		updateUserAchievements(user.id);
+		const newlyUnlocked = await updateUserAchievements(user.id);
 
-		return { id, aiQuestion };
+		return { id, aiQuestion, newlyUnlocked };
 	}
 );

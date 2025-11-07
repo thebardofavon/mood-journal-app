@@ -223,7 +223,19 @@
 	<div class="bg-muted/50 rounded-lg p-6 shadow">
 		<h2 class="mb-4 text-xl font-bold">💡 Personalized Insights</h2>
 		<div class="space-y-3">
-			{#if stats.activeStreak >= 7}
+			{#if stats.totalEntries === 0}
+				<div class="flex items-start gap-3">
+					<span class="text-2xl">🌱</span>
+					<div>
+						<p class="font-medium text-gray-900 dark:text-white">Just getting started</p>
+						<p class="text-sm text-gray-600 dark:text-gray-400">
+							You're building a great habit! Try to journal regularly to unlock deeper insights
+							about your emotional patterns.
+						</p>
+					</div>
+				</div>
+			{:else}
+				{#if stats.activeStreak >= 7}
 				<div class="flex items-start gap-3">
 					<span class="text-2xl">🎉</span>
 					<div>
@@ -269,9 +281,41 @@
 						</p>
 					</div>
 				</div>
+			{:else if stats.entriesLast30Days >= 10}
+				<div class="flex items-start gap-3">
+					<span class="text-2xl">✨</span>
+					<div>
+						<p class="font-medium text-gray-900 dark:text-white">Building momentum</p>
+						<p class="text-sm text-gray-600 dark:text-gray-400">
+							{stats.entriesLast30Days} entries in the past month. You're developing a consistent journaling habit!
+						</p>
+					</div>
+				</div>
+			{:else if stats.totalEntries >= 5}
+				<div class="flex items-start gap-3">
+					<span class="text-2xl">📝</span>
+					<div>
+						<p class="font-medium text-gray-900 dark:text-white">Making progress</p>
+						<p class="text-sm text-gray-600 dark:text-gray-400">
+							You have {stats.totalEntries} journal entries. Keep going to discover more patterns in your emotional journey!
+						</p>
+					</div>
+				</div>
 			{/if}
 
-			{#if stats.totalEntries < 5}
+			{#if stats.avgSentiment >= -10 && stats.avgSentiment <= 10 && stats.totalEntries >= 5}
+				<div class="flex items-start gap-3">
+					<span class="text-2xl">⚖️</span>
+					<div>
+						<p class="font-medium text-gray-900 dark:text-white">Balanced emotions</p>
+						<p class="text-sm text-gray-600 dark:text-gray-400">
+							Your entries show a balanced emotional state. You're experiencing a mix of different feelings.
+						</p>
+					</div>
+				</div>
+			{/if}
+
+			{#if stats.totalEntries < 5 && stats.totalEntries > 0}
 				<div class="flex items-start gap-3">
 					<span class="text-2xl">🌱</span>
 					<div>
@@ -283,15 +327,28 @@
 					</div>
 				</div>
 			{/if}
+			{/if}
 		</div>
 	</div>
 
 	<!-- Predictive Insights -->
-	{#if data.insights}
+	{#if data.insights && stats.totalEntries >= 5}
 		<div class="bg-muted/50 rounded-lg p-6 shadow">
 			<h2 class="mb-4 text-xl font-bold">🔮 Predictive Insights</h2>
 
-			{#if data.insights.forecast}
+			{#if Object.keys(data.insights.dayOfWeekPattern).length === 0 && Object.keys(data.insights.timeOfDayPattern).length === 0 && !data.insights.forecast}
+				<div class="flex items-start gap-3">
+					<span class="text-2xl">📊</span>
+					<div>
+						<p class="font-medium text-gray-900 dark:text-white">Building your patterns</p>
+						<p class="text-sm text-gray-600 dark:text-gray-400">
+							Keep journaling to discover patterns in your mood based on the day of the week and time
+							of day. We need at least 14 entries to show meaningful predictions.
+						</p>
+					</div>
+				</div>
+			{:else}
+				{#if data.insights.forecast}
 				<div class="bg-background/50 mb-6 rounded-lg p-4">
 					<div class="flex items-start gap-3">
 						<span class="text-3xl">
@@ -387,6 +444,7 @@
 						{/each}
 					</div>
 				</div>
+			{/if}
 			{/if}
 		</div>
 	{/if}

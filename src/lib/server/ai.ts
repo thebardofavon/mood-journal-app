@@ -29,7 +29,7 @@ type ProviderConfig =
 const DEFAULT_MODELS: Record<AIProvider, string> = {
 	openai: 'gpt-4o-mini',
 	groq: 'llama3-8b-8192',
-	gemini: 'gemini-1.5-flash',
+	gemini: 'gemini-2.5-flash',
 	local: 'llama3.2:3b'
 };
 
@@ -456,8 +456,8 @@ export async function chat(
 					.join('\n\n');
 		}
 	} catch (error) {
-		console.error('RAG retrieval failed:', error);
-		// Continue without RAG context if retrieval fails
+		// RAG is optional - continue without it if it fails
+		console.log('Continuing without RAG context');
 	}
 
 	const systemPrompt = `You are a compassionate AI companion for a mood journal app. Your role is to help users reflect on their emotions, identify patterns, and gain insights from their journal entries.
@@ -639,6 +639,16 @@ export async function storeEntryEmbedding(
 ): Promise<void> {
 	try {
 		const providerConfig = resolveProviderConfig(settings);
+		
+		// For local provider, check if Ollama is available first
+		if (providerConfig.provider === 'local') {
+			const isAvailable = await checkOllamaAvailable();
+			if (!isAvailable) {
+				console.log('Ollama not available - skipping embedding generation for entry', entryId);
+				return;
+			}
+		}
+		
 		const embedding = await generateEmbedding(content, providerConfig);
 		const embeddingJson = serializeEmbedding(embedding);
 		const model =
@@ -691,6 +701,16 @@ export async function retrieveSimilarEntries(
 ): Promise<Array<{ entry: Entry; similarity: number }>> {
 	try {
 		const providerConfig = resolveProviderConfig(settings);
+		
+		// For local provider, check if Ollama is available first
+		if (providerConfig.provider === 'local') {
+			const isAvailable = await checkOllamaAvailable();
+			if (!isAvailable) {
+				console.log('Ollama not available - skipping RAG similarity search');
+				return [];
+			}
+		}
+		
 		const queryEmbedding = await generateEmbedding(query, providerConfig);
 
 		// Get all embeddings for user's entries
@@ -721,7 +741,7 @@ export async function retrieveSimilarEntries(
 
 		return similarities;
 	} catch (error) {
-		console.error('Failed to retrieve similar entries:', error);
+		console.log('RAG similarity search not available:', error instanceof Error ? error.message : 'Unknown error');
 		return [];
 	}
 }

@@ -7,6 +7,8 @@
 	let transcript = $state('');
 	let recognition: any = null; // Use any to avoid type issues
 	let isSupported = $state(false);
+	let error = $state('');
+	let interimText = $state('');
 
 	onMount(() => {
 		// Check if Web Speech API is supported
@@ -20,37 +22,61 @@
 
 			recognition.onresult = (event: any) => {
 				let finalTranscript = '';
-				let interimTranscript = '';
+				let interim = '';
 
 				for (let i = event.resultIndex; i < event.results.length; i++) {
 					const result = event.results[i];
 					if (result.isFinal) {
-						finalTranscript += result[0].transcript;
+						finalTranscript += result[0].transcript + ' ';
 					} else {
-						interimTranscript += result[0].transcript;
+						interim += result[0].transcript;
 					}
 				}
 
-				transcript = finalTranscript + interimTranscript;
-				onTranscript(transcript);
+				if (finalTranscript) {
+					transcript += finalTranscript;
+					onTranscript(transcript);
+				}
+				interimText = interim;
 			};
 
 			recognition.onerror = (event: any) => {
 				console.error('Speech recognition error:', event.error);
 				isRecording = false;
+				
+				// Show user-friendly error messages
+				if (event.error === 'no-speech') {
+					error = 'No speech detected. Please try again.';
+				} else if (event.error === 'audio-capture') {
+					error = 'Microphone not found. Please check your device settings.';
+				} else if (event.error === 'not-allowed') {
+					error = 'Microphone access denied. Please allow microphone access in your browser settings.';
+				} else {
+					error = `Error: ${event.error}. Please try again.`;
+				}
+				
+				// Clear error after 5 seconds
+				setTimeout(() => (error = ''), 5000);
 			};
 
 			recognition.onend = () => {
 				isRecording = false;
+				interimText = '';
 			};
 		}
 	});
 
 	function startRecording() {
 		if (recognition && !isRecording) {
-			transcript = '';
-			recognition.start();
-			isRecording = true;
+			error = '';
+			interimText = '';
+			try {
+				recognition.start();
+				isRecording = true;
+			} catch (err) {
+				console.error('Failed to start recognition:', err);
+				error = 'Failed to start recording. Please try again.';
+			}
 		}
 	}
 
@@ -58,17 +84,26 @@
 		if (recognition && isRecording) {
 			recognition.stop();
 			isRecording = false;
+			interimText = '';
 		}
 	}
 
 	function clearTranscript() {
 		transcript = '';
+		interimText = '';
 		onTranscript('');
 	}
 </script>
 
 {#if isSupported}
 	<div class="voice-recorder space-y-4">
+		<!-- Error Message -->
+		{#if error}
+			<div class="rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+				{error}
+			</div>
+		{/if}
+
 		<div class="flex items-center gap-3">
 			<button
 				onclick={isRecording ? stopRecording : startRecording}
@@ -78,9 +113,13 @@
 				disabled={!isSupported}
 			>
 				{#if isRecording}
-					<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-						<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd" />
-					</svg>
+					<!-- Recording Animation -->
+					<div class="flex items-center gap-2">
+						<span class="relative flex h-3 w-3">
+							<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75"></span>
+							<span class="relative inline-flex h-3 w-3 rounded-full bg-white"></span>
+						</span>
+					</div>
 					Stop Recording
 				{:else}
 					<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
@@ -100,35 +139,51 @@
 			{/if}
 		</div>
 
-		{#if transcript}
-			<div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
-				<h4 class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Transcript:</h4>
-				<p class="text-gray-900 dark:text-white">{transcript}</p>
+		<!-- Transcript Display -->
+		{#if transcript || interimText}
+			<div class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
+				<div class="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">Transcript:</div>
+				<div class="text-sm text-gray-700 dark:text-gray-300">
+					{transcript}
+					{#if interimText}
+						<span class="text-gray-400 italic dark:text-gray-500">{interimText}</span>
+					{/if}
+				</div>
 			</div>
 		{/if}
 
+		<!-- Status Indicator -->
 		{#if isRecording}
-			<div class="flex items-center gap-2 text-red-600 dark:text-red-400">
-				<div class="h-3 w-3 animate-pulse rounded-full bg-red-600"></div>
-				<span class="text-sm font-medium">Recording...</span>
+			<div class="flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
+				<span class="relative flex h-2 w-2">
+					<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+					<span class="relative inline-flex h-2 w-2 rounded-full bg-red-500"></span>
+				</span>
+				Listening...
 			</div>
 		{/if}
 	</div>
 {:else}
-	<div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
-		<div class="flex items-center gap-2">
-			<svg class="h-5 w-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+	<div class="rounded-lg bg-yellow-50 p-4 text-sm text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200">
+		<div class="flex items-start gap-3">
+			<svg class="h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
 				<path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
 			</svg>
-			<span class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-				Voice recording is not supported in this browser. Try Chrome, Edge, or Safari.
-			</span>
+			<div>
+				<div class="font-medium">Voice recording not supported</div>
+				<div class="mt-1">
+					Your browser doesn't support speech recognition. Please use Chrome, Edge, or Safari for voice journaling.
+				</div>
+			</div>
 		</div>
 	</div>
 {/if}
 
 <style>
-	.voice-recorder {
-		max-width: 600px;
+	@keyframes ping {
+		75%, 100% {
+			transform: scale(2);
+			opacity: 0;
+		}
 	}
 </style>

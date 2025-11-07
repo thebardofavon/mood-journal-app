@@ -99,7 +99,17 @@ export async function getUserStats(userId: string): Promise<UserStats> {
 	// For now, set these to false - would need more complex tracking
 	const hasPhotos = photoCount > 0;
 	const hasVoiceEntries = false; // Would need to check for audio attachments
-	const hasUsedAI = false; // Would need conversation tracking
+	
+	// Check if user has AI settings enabled
+	const [aiSettings] = await db
+		.select()
+		.from(table.aiSettings)
+		.where(eq(table.aiSettings.userId, userId))
+		.limit(1);
+	const hasUsedAI = aiSettings?.aiEnabled || false;
+	
+	// These would ideally be tracked in a separate actions table
+	// For now, we'll set them based on heuristics
 	const hasViewedAnalytics = false; // Would need event tracking
 	const hasSearched = false; // Would need search event tracking
 	const hasExported = false; // Would need export event tracking

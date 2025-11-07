@@ -6,6 +6,8 @@
 	import { resolve } from '$app/paths';
 	import InstallPrompt from '$lib/components/InstallPrompt.svelte';
 	import BottomNav from '$lib/components/BottomNav.svelte';
+	import AchievementToast from '$lib/components/AchievementToast.svelte';
+	import { achievementNotifications } from '$lib/stores/achievements';
 
 	let { children, data } = $props();
 
@@ -62,4 +64,12 @@
 	{@render children?.()}
 	<BottomNav />
 	<InstallPrompt />
+
+	<!-- Achievement Notifications -->
+	{#each $achievementNotifications as achievement (achievement.id)}
+		<AchievementToast
+			{achievement}
+			onClose={() => achievementNotifications.removeNotification(achievement.id)}
+		/>
+	{/each}
 </div>

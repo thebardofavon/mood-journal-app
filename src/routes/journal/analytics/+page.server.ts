@@ -110,7 +110,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	// Prepare chart data
 	const chartData = entries.map((e) => ({
-		date: e.createdAt,
+		date: e.createdAt.toISOString(),
 		sentimentScore: e.sentimentScore || 0,
 		mood: e.mood
 	}));

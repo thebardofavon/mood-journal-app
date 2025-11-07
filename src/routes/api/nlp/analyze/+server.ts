@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { detectCognitiveDistortions, generateReframes } from '$lib/server/nlp';
 import { db } from '$lib/server/db';
-import { entry } from '$lib/server/db/schema';
+import * as table from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { validateSessionToken } from '$lib/server/auth';
 
@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
 		// Optional: verify entry belongs to user if entryId provided
 		if (entryId) {
-			const userEntry = await db.select().from(entry).where(eq(entry.id, entryId)).limit(1);
+			const userEntry = await db.select().from(table.entry).where(eq(table.entry.id, entryId)).limit(1);
 
 			if (userEntry.length === 0 || userEntry[0].userId !== user.id) {
 				return json({ error: 'Entry not found' }, { status: 404 });
@@ -68,22 +68,28 @@ export const PUT: RequestHandler = async ({ request, cookies }) => {
 
 		const { entryId, distortionType, accepted, notes } = await request.json();
 
-		// Log feedback for future model improvement
-		console.log('NLP Feedback:', {
+		if (!distortionType || typeof accepted !== 'boolean') {
+			return json({ error: 'Invalid feedback data' }, { status: 400 });
+		}
+
+		// Store feedback in database for active learning
+		const feedbackId = crypto.randomUUID();
+		const now = new Date();
+
+		await db.insert(table.nlpFeedback).values({
+			id: feedbackId,
 			userId: user.id,
-			entryId,
+			entryId: entryId || null,
 			distortionType,
 			accepted,
-			notes,
-			timestamp: new Date().toISOString()
+			notes: notes || null,
+			createdAt: now
 		});
-
-		// TODO: Store feedback in database for active learning
-		// This could feed into fine-tuning or prompt improvement
 
 		return json({
 			success: true,
-			message: 'Feedback recorded'
+			message: 'Feedback recorded',
+			feedbackId
 		});
 	} catch (error) {
 		console.error('Feedback error:', error);

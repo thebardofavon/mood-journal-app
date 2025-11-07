@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import {
 		Chart,
 		CategoryScale,
@@ -7,6 +6,8 @@
 		PointElement,
 		LineElement,
 		BarElement,
+		LineController,
+		BarController,
 		Title,
 		Tooltip,
 		Legend,
@@ -19,6 +20,8 @@
 		PointElement,
 		LineElement,
 		BarElement,
+		LineController,
+		BarController,
 		Title,
 		Tooltip,
 		Legend,
@@ -27,7 +30,7 @@
 
 	interface Props {
 		data: Array<{
-			date: Date;
+			date: Date | string;
 			sentimentScore: number;
 			mood: string;
 			count?: number;
@@ -38,7 +41,7 @@
 
 	let { data, timeRange = 'daily', chartType = 'line' }: Props = $props();
 
-	let canvas: HTMLCanvasElement;
+	let canvas: HTMLCanvasElement | undefined = $state();
 	let chartInstance: Chart | null = null;
 
 	function aggregateData(
@@ -54,7 +57,8 @@
 			const grouped = new Map<string, { sum: number; count: number }>();
 
 			rawData.forEach((entry) => {
-				const dateKey = entry.date.toISOString().split('T')[0];
+				const dateObj = typeof entry.date === 'string' ? new Date(entry.date) : entry.date;
+				const dateKey = dateObj.toISOString().split('T')[0];
 				if (!grouped.has(dateKey)) {
 					grouped.set(dateKey, { sum: 0, count: 0 });
 				}
@@ -76,7 +80,8 @@
 			const grouped = new Map<string, { sum: number; count: number }>();
 
 			rawData.forEach((entry) => {
-				const date = new Date(entry.date);
+				const dateObj = typeof entry.date === 'string' ? new Date(entry.date) : entry.date;
+				const date = new Date(dateObj);
 				const weekStart = new Date(date);
 				weekStart.setDate(date.getDate() - date.getDay());
 				const weekKey = weekStart.toISOString().split('T')[0];
@@ -108,7 +113,8 @@
 			const grouped = new Map<string, { sum: number; count: number }>();
 
 			rawData.forEach((entry) => {
-				const monthKey = entry.date.toISOString().slice(0, 7); // YYYY-MM
+				const dateObj = typeof entry.date === 'string' ? new Date(entry.date) : entry.date;
+				const monthKey = dateObj.toISOString().slice(0, 7); // YYYY-MM
 				if (!grouped.has(monthKey)) {
 					grouped.set(monthKey, { sum: 0, count: 0 });
 				}
@@ -130,6 +136,7 @@
 
 	function createChart() {
 		if (!canvas) return;
+		if (!data || data.length === 0) return;
 
 		// Destroy existing chart
 		if (chartInstance) {
@@ -219,20 +226,33 @@
 		});
 	}
 
-	onMount(() => {
-		createChart();
-	});
-
 	$effect(() => {
 		// Recreate chart when data, timeRange, or chartType changes
-		if (canvas && (data || timeRange || chartType)) {
+		if (canvas && data && data.length > 0) {
 			createChart();
 		}
+		
+		// Cleanup on unmount
+		return () => {
+			if (chartInstance) {
+				chartInstance.destroy();
+				chartInstance = null;
+			}
+		};
 	});
 </script>
 
 <div class="mood-trends-chart">
-	<canvas bind:this={canvas}></canvas>
+	{#if !data || data.length === 0}
+		<div class="flex h-full items-center justify-center text-gray-500 dark:text-gray-400">
+			<div class="text-center">
+				<p class="text-lg font-medium">No data available</p>
+				<p class="mt-2 text-sm">Start journaling to see your mood trends over time!</p>
+			</div>
+		</div>
+	{:else}
+		<canvas bind:this={canvas}></canvas>
+	{/if}
 </div>
 
 <style>
@@ -240,5 +260,16 @@
 		width: 100%;
 		height: 400px;
 		position: relative;
+	}
+	
+	canvas {
+		display: block;
+		box-sizing: border-box;
+		height: 100%;
+		width: 100%;
+	}
+	
+	canvas.hidden {
+		display: none;
 	}
 </style>

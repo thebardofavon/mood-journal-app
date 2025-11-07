@@ -6,6 +6,7 @@
 	import TemplateSelector from '$lib/components/TemplateSelector.svelte';
 	import { safeHtml } from '$lib/actions/safeHtml';
 	import VoiceRecorder from '$lib/components/VoiceRecorder.svelte';
+	import { achievementNotifications } from '$lib/stores/achievements';
 
 	let { data, form } = $props();
 
@@ -16,17 +17,28 @@
 
 	// Form state
 	let content = $state('');
-	let mood = $state('neutral');
+	// Note: mood is now auto-generated from NLP sentiment analysis, not user input
 	let attachments = $state<Array<{ url: string; type: string }>>([]);
 	let uploading = $state(false);
 	let submitting = $state(false);
 	let dragOver = $state(false);
+	let showPrompts = $state(false);
+	let currentPrompt = $state('');
+
+	// Prompt categories
+	const promptCategories = [
+		'Gratitude',
+		'Self-Reflection',
+		'Mindfulness',
+		'Goals & Intentions',
+		'Processing Emotions'
+	];
 
 	// Autosave functionality
 	const AUTOSAVE_KEY = 'journal-draft';
 	function saveDraft() {
 		if (browser) {
-			localStorage.setItem(AUTOSAVE_KEY, JSON.stringify({ content, mood, timestamp: Date.now() }));
+			localStorage.setItem(AUTOSAVE_KEY, JSON.stringify({ content, timestamp: Date.now() }));
 		}
 	}
 	function loadDraft() {
@@ -34,12 +46,12 @@
 			try {
 				const saved = localStorage.getItem(AUTOSAVE_KEY);
 				if (saved) {
-					const draft = JSON.parse(saved);
-					// Only restore if it's recent (within 24 hours)
-					if (Date.now() - draft.timestamp < 24 * 60 * 60 * 1000) {
-						content = draft.content || '';
-						mood = draft.mood || 'neutral';
-					} else {
+				const draft = JSON.parse(saved);
+				// Only restore if it's recent (within 24 hours)
+				if (Date.now() - draft.timestamp < 24 * 60 * 60 * 1000) {
+					content = draft.content || '';
+					// mood is now auto-generated from sentiment, not restored from draft
+				} else {
 						localStorage.removeItem(AUTOSAVE_KEY);
 					}
 				}
@@ -61,6 +73,26 @@
 		}
 	}
 
+	async function getPrompt() {
+		try {
+			const response = await fetch('/api/prompts/random');
+			if (response.ok) {
+				const data = await response.json();
+				currentPrompt = data.prompt;
+				showPrompts = true;
+			}
+		} catch (error) {
+			console.error('Failed to fetch prompt:', error);
+		}
+	}
+
+	function usePrompt() {
+		if (currentPrompt) {
+			content = content ? content + '\n\n' + currentPrompt + '\n\n' : currentPrompt + '\n\n';
+			showPrompts = false;
+		}
+	}
+
 	// Load draft on mount
 	if (browser) {
 		loadDraft();
@@ -68,7 +100,7 @@
 
 	// Autosave on changes
 	$effect(() => {
-		if (content || mood !== 'neutral') {
+		if (content) {
 			saveDraft();
 		}
 	});
@@ -282,16 +314,66 @@
 			method="POST"
 			use:enhance={() => {
 				submitting = true;
-				return async ({ update }) => {
+				return async ({ result, update }) => {
 					await update();
 					submitting = false;
 					clearDraft();
+					
+					// Show achievement notifications if any were unlocked
+					if (result.type === 'success' && result.data?.newlyUnlocked) {
+						for (const achievement of result.data.newlyUnlocked) {
+							achievementNotifications.addNotification({
+								id: achievement.id,
+								title: achievement.title,
+								description: achievement.description,
+								icon: achievement.icon,
+								xp: achievement.xp
+							});
+						}
+					}
 				};
 			}}
 		>
 			<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 				<!-- Editor Section -->
 				<div class="space-y-6">
+					<!-- Journaling Prompt -->
+					<div class="rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+						<div class="mb-4 flex items-center justify-between">
+							<h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+								Need Inspiration?
+							</h2>
+							<button
+								type="button"
+								onclick={getPrompt}
+								class="rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700"
+							>
+								Get Prompt
+							</button>
+						</div>
+						{#if showPrompts && currentPrompt}
+							<div class="rounded-lg bg-purple-50 p-4 dark:bg-purple-900/20">
+								<p class="mb-3 text-gray-700 dark:text-gray-300">{currentPrompt}</p>
+								<div class="flex gap-2">
+									<button
+										type="button"
+										onclick={usePrompt}
+										class="rounded bg-purple-600 px-3 py-1 text-sm text-white hover:bg-purple-700"
+									>
+										Use This
+									</button>
+									<button
+										type="button"
+										onclick={getPrompt}
+										class="rounded bg-gray-200 px-3 py-1 text-sm text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+									>
+										Get Another
+									</button>
+								</div>
+							</div>
+						{/if}
+					</div>
+
 					<!-- Template Selector -->
 					<div class="rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
 						<h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
@@ -300,37 +382,42 @@
 						<TemplateSelector onSelectTemplate={handleTemplateSelect} />
 					</div>
 
-					<!-- Mood Selector -->
+					<!-- Mood Selector - DISABLED: Mood is now auto-detected by NLP sentiment analysis -->
+					<!--
 					<div class="rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
 						<div class="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">
 							How are you feeling?
 						</div>
-						<div class="grid grid-cols-5 gap-3">
-							{#each ['happy', 'neutral', 'sad', 'anxious', 'excited'] as m}
+						<div class="grid grid-cols-3 gap-3 sm:grid-cols-5">
+							{#each [
+								{ value: 'happy', emoji: '😊' },
+								{ value: 'neutral', emoji: '😐' },
+								{ value: 'sad', emoji: '😢' },
+								{ value: 'anxious', emoji: '😰' },
+								{ value: 'excited', emoji: '🤩' },
+								{ value: 'calm', emoji: '😌' },
+								{ value: 'stressed', emoji: '😫' },
+								{ value: 'angry', emoji: '😠' },
+								{ value: 'other', emoji: '🤔' }
+							] as moodOption}
 								<button
 									type="button"
-									onclick={() => (mood = m)}
+									onclick={() => (mood = moodOption.value)}
 									class="flex flex-col items-center gap-2 rounded-lg border-2 p-3 transition-all {mood ===
-									m
+									moodOption.value
 										? 'border-gray-900 bg-gray-100 dark:border-white dark:bg-gray-800'
 										: 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'}"
 								>
-									<span class="text-3xl">
-										{#if m === 'happy'}😊
-										{:else if m === 'neutral'}😐
-										{:else if m === 'sad'}😢
-										{:else if m === 'anxious'}😰
-										{:else if m === 'excited'}🤩
-										{/if}
-									</span>
+									<span class="text-3xl">{moodOption.emoji}</span>
 									<span class="text-xs font-medium text-gray-700 capitalize dark:text-gray-300"
-										>{m}</span
+										>{moodOption.value}</span
 									>
 								</button>
 							{/each}
 						</div>
 						<input type="hidden" name="mood" value={mood} />
 					</div>
+					-->
 
 					<!-- Editor -->
 					<div class="overflow-hidden rounded-xl bg-white shadow-lg dark:bg-gray-800">

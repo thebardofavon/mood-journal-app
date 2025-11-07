@@ -53,8 +53,11 @@
 			{ value: 'llama-3.1-70b-versatile', label: 'Llama 3.1 70B (high quality)' }
 		],
 		gemini: [
-			{ value: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash' },
-			{ value: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro' }
+			{ value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash (experimental, recommended)' },
+			{ value: 'gemini-flash-lite-latest', label: 'Gemini Flash-Lite Latest (latest)' },
+			{ value: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro' },
+			{ value: 'gemini-flash-latest', label: 'Gemini Flash Latest (latest)' },
+			{ value: 'gemini-2.5-flash-lite', label: 'Gemini 2.5 Flash-Lite' }
 		]
 	};
 

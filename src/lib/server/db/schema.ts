@@ -172,6 +172,19 @@ export const userProgress = sqliteTable('user_progress', {
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
 
+// NLP Feedback for active learning
+export const nlpFeedback = sqliteTable('nlp_feedback', {
+	id: text('id').primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => user.id, { onDelete: 'cascade' }),
+	entryId: text('entry_id').references(() => entry.id, { onDelete: 'cascade' }),
+	distortionType: text('distortion_type').notNull(),
+	accepted: integer('accepted', { mode: 'boolean' }).notNull(),
+	notes: text('notes'),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+});
+
 // Export types
 export type User = typeof user.$inferSelect;
 export type Session = typeof session.$inferSelect;
@@ -186,3 +199,4 @@ export type VerificationToken = typeof verificationToken.$inferSelect;
 export type EntryEmbedding = typeof entryEmbedding.$inferSelect;
 export type UserAchievement = typeof userAchievement.$inferSelect;
 export type UserProgress = typeof userProgress.$inferSelect;
+export type NlpFeedback = typeof nlpFeedback.$inferSelect;

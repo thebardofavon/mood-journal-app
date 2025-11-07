@@ -11,7 +11,11 @@
 			neutral: '😐',
 			sad: '😢',
 			anxious: '😰',
-			excited: '🤩'
+			excited: '🤩',
+			calm: '😌',
+			stressed: '😫',
+			angry: '😠',
+			other: '🤔'
 		};
 		return emojis[mood] || '😐';
 	}
@@ -133,7 +137,7 @@
 					</div>
 
 					<!-- Mood Filter -->
-					<div class="flex gap-2">
+					<div class="flex flex-wrap gap-2">
 						<button
 							onclick={() => {
 								moodFilter = 'all';
@@ -145,7 +149,7 @@
 						>
 							All
 						</button>
-						{#each ['happy', 'neutral', 'sad', 'anxious', 'excited'] as mood}
+						{#each ['happy', 'neutral', 'sad', 'anxious', 'excited', 'calm', 'stressed', 'angry', 'other'] as mood}
 							<button
 								onclick={() => {
 									moodFilter = mood;
@@ -373,6 +377,7 @@
 					</button>
 				</div>
 			{/if}
-		</PullToRefresh>
+		{/if}
+	</PullToRefresh>
 	</div>
 </div>

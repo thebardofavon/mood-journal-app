@@ -302,6 +302,144 @@ export function getSentimentColor(normalizedScore: number): string {
 }
 
 /**
+ * Detect specific mood from text content using keyword analysis
+ * Returns a more nuanced mood classification than just positive/negative/neutral
+ */
+export function detectMood(text: string, sentimentScore: number): string {
+	const lowerText = text.toLowerCase();
+	
+	// Expanded keyword dictionaries for different moods
+	const sadKeywords = [
+		'sad', 'sadness', 'depressed', 'depression', 'hopeless', 'worthless',
+		'lonely', 'alone', 'crying', 'cry', 'tears', 'hurt', 'pain', 'miserable',
+		'devastated', 'heartbroken', 'grief', 'sorrow', 'unhappy', 'down', 'low'
+	];
+	
+	const anxiousKeywords = [
+		'anxious', 'anxiety', 'worried', 'worry', 'nervous', 'panic', 'scared', 
+		'fear', 'afraid', 'terrified', 'uneasy', 'tense', 'restless', 'overwhelmed'
+	];
+	
+	const stressedKeywords = [
+		'stressed', 'stress', 'overwhelmed', 'pressure', 'deadline', 'busy', 
+		'exhausted', 'tired', 'drained', 'burnt out', 'burnout', 'overworked',
+		'swamped', 'hectic', 'chaotic'
+	];
+	
+	const excitedKeywords = [
+		'excited', 'excitement', 'thrilled', 'amazing', 'awesome', 'incredible', 
+		'fantastic', 'wonderful', 'great news', 'can\'t wait', 'looking forward',
+		'pumped', 'stoked', 'enthusiastic'
+	];
+	
+	const calmKeywords = [
+		'calm', 'peaceful', 'relaxed', 'serene', 'tranquil', 'content', 
+		'at peace', 'centered', 'balanced', 'grounded', 'meditat', 'zen',
+		'composed', 'settled'
+	];
+	
+	const angryKeywords = [
+		'angry', 'anger', 'furious', 'mad', 'frustrated', 'annoyed', 'irritated', 
+		'rage', 'outraged', 'infuriated', 'pissed', 'upset', 'livid', 'enraged'
+	];
+	
+	const happyKeywords = [
+		'happy', 'happiness', 'joy', 'joyful', 'glad', 'delighted', 'pleased',
+		'grateful', 'thankful', 'blessed', 'cheerful', 'content', 'satisfied',
+		'great day', 'wonderful', 'excellent', 'good day', 'productive'
+	];
+	
+	// Count keyword matches
+	let sadCount = 0;
+	let anxiousCount = 0;
+	let stressedCount = 0;
+	let excitedCount = 0;
+	let calmCount = 0;
+	let angryCount = 0;
+	let happyCount = 0;
+	
+	sadKeywords.forEach(keyword => {
+		if (lowerText.includes(keyword)) sadCount++;
+	});
+	
+	anxiousKeywords.forEach(keyword => {
+		if (lowerText.includes(keyword)) anxiousCount++;
+	});
+	
+	stressedKeywords.forEach(keyword => {
+		if (lowerText.includes(keyword)) stressedCount++;
+	});
+	
+	excitedKeywords.forEach(keyword => {
+		if (lowerText.includes(keyword)) excitedCount++;
+	});
+	
+	calmKeywords.forEach(keyword => {
+		if (lowerText.includes(keyword)) calmCount++;
+	});
+	
+	angryKeywords.forEach(keyword => {
+		if (lowerText.includes(keyword)) angryCount++;
+	});
+	
+	happyKeywords.forEach(keyword => {
+		if (lowerText.includes(keyword)) happyCount++;
+	});
+	
+	// Determine the dominant specific mood
+	const moodScores = [
+		{ mood: 'sad', score: sadCount },
+		{ mood: 'anxious', score: anxiousCount },
+		{ mood: 'stressed', score: stressedCount },
+		{ mood: 'excited', score: excitedCount },
+		{ mood: 'calm', score: calmCount },
+		{ mood: 'angry', score: angryCount },
+		{ mood: 'happy', score: happyCount }
+	];
+	
+	// Sort by score descending
+	moodScores.sort((a, b) => b.score - a.score);
+	
+	// Debug logging
+	console.log('🧠 [detectMood] Analysis:');
+	console.log('   Text:', text.substring(0, 60));
+	console.log('   Sentiment Score:', sentimentScore);
+	console.log('   Keyword Counts:', {
+		sad: sadCount,
+		anxious: anxiousCount,
+		stressed: stressedCount,
+		excited: excitedCount,
+		calm: calmCount,
+		angry: angryCount,
+		happy: happyCount
+	});
+	console.log('   Top Mood:', moodScores[0]);
+	
+	// If a specific mood has at least 1 keyword match, use it
+	if (moodScores[0].score >= 1) {
+		const topMood = moodScores[0].mood;
+		
+		// Validate alignment with sentiment for edge cases
+		// Positive moods should align with positive sentiment
+		if ((topMood === 'excited' || topMood === 'calm' || topMood === 'happy') && sentimentScore < -0.5) {
+			// Strong negative sentiment overrides positive keyword
+			return 'sad';
+		}
+		// Negative moods are generally reliable
+		return topMood;
+	}
+	
+	// Fall back to sentiment-based mood
+	if (sentimentScore > 0.3) {
+		return 'happy';
+	} else if (sentimentScore < -0.3) {
+		return 'sad';
+	} else {
+		return 'neutral';
+	}
+}
+
+/**
  * Common English stop words to filter out
  */
 const STOP_WORDS = new Set([

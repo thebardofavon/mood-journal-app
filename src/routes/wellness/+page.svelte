@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import BreathingExercise from '$lib/components/BreathingExercise.svelte';
 
 	let { data } = $props();
+
+	let showBreathingExercise = $state(false);
+	let selectedExercise: 'box' | '478' = $state('box');
 
 	function getPriorityColor(priority: string) {
 		switch (priority) {
@@ -127,7 +131,47 @@
 
 			<!-- Sidebar -->
 			<div class="space-y-6">
-				<!-- Breathing Exercises -->
+				<!-- Interactive Breathing Exercise -->
+				{#if showBreathingExercise}
+					<div class="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
+						<div class="mb-4 flex items-center justify-between">
+							<h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+								Breathing Exercise
+							</h3>
+							<button
+								onclick={() => (showBreathingExercise = false)}
+								class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+							>
+								Close
+							</button>
+						</div>
+						<div class="mb-4">
+							<div class="flex gap-2">
+								<button
+									onclick={() => (selectedExercise = 'box')}
+									class="flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors {selectedExercise ===
+									'box'
+										? 'bg-blue-600 text-white'
+										: 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300'}"
+								>
+									Box Breathing
+								</button>
+								<button
+									onclick={() => (selectedExercise = '478')}
+									class="flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors {selectedExercise ===
+									'478'
+										? 'bg-blue-600 text-white'
+										: 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300'}"
+								>
+									4-7-8 Breathing
+								</button>
+							</div>
+						</div>
+						<BreathingExercise exercise={selectedExercise} />
+					</div>
+				{/if}
+
+				<!-- Breathing Exercises List -->
 				<div class="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
 					<h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
 						Breathing Exercises
@@ -141,16 +185,15 @@
 									<strong>Duration:</strong>
 									{exercise.duration}
 								</div>
-								<details class="text-sm">
-									<summary class="cursor-pointer text-blue-600 hover:underline dark:text-blue-400">
-										View Steps
-									</summary>
-									<ol class="mt-2 list-inside list-decimal space-y-1">
-										{#each exercise.steps as step}
-											<li class="text-gray-600 dark:text-gray-400">{step}</li>
-										{/each}
-									</ol>
-								</details>
+								<button
+									onclick={() => {
+										selectedExercise = exercise.name === 'Box Breathing' ? 'box' : '478';
+										showBreathingExercise = true;
+									}}
+									class="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+								>
+									Try It Now
+								</button>
 							</div>
 						{/each}
 					</div>

@@ -32,7 +32,10 @@ export const PasswordSchema = v.pipe(
 	v.maxLength(128, 'Password is too long')
 );
 
-export const MoodSchema = v.picklist(['happy', 'neutral', 'sad', 'anxious'], 'Invalid mood value');
+export const MoodSchema = v.picklist(
+	['happy', 'neutral', 'sad', 'anxious', 'excited', 'calm', 'stressed', 'angry', 'other'],
+	'Invalid mood value'
+);
 
 export const ContentSchema = v.pipe(
 	v.string(),
